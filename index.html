@@ -3,242 +3,1100 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Crafti Gaming</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b16">
+<title>Crafti Gaming | Videojuegos y Tecnología</title>
+
 <style>
-* { box-sizing: border-box; }
+:root {
+  --fondo: #090b16;
+  --panel: #141829;
+  --cyan: #00eaff;
+  --violeta: #8455ff;
+  --rosa: #ff32a8;
+  --texto: #f5f6ff;
+  --gris: #aeb6cf;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  background: #0b0d14;
-  color: #edf0fa;
-  font-family: Arial, sans-serif;
+  color: var(--texto);
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--fondo);
+  min-height: 100vh;
 }
-header {
-  padding: 25px;
-  font-size: 32px;
-  font-weight: bold;
-  border-top: 4px solid #8b5cf6;
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    radial-gradient(ellipse at top left, #5120a633, transparent 55%),
+    radial-gradient(ellipse at bottom right, #00eaff18, transparent 50%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='160' viewBox='0 0 180 160'%3E%3Cg fill='none' stroke='%238455ff' stroke-width='2' opacity='.15'%3E%3Cpath d='M20 30Q10 30 8 45L5 60Q8 70 18 60L30 50H45L57 60Q67 70 70 60L67 45Q65 30 55 30Z'/%3E%3Cpath d='M17 43H31M24 36V50'/%3E%3Ccircle cx='51' cy='40' r='3'/%3E%3Ccircle cx='59' cy='48' r='3'/%3E%3Cpath d='M115 20L125 33L140 20L145 50H110Z'/%3E%3Cpath d='M115 90L100 112H115L108 135L140 105H123L130 90Z'/%3E%3Crect x='20' y='100' width='40' height='28' rx='4'/%3E%3Cpath d='M40 128V138M28 138H52'/%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
 }
-header span { color: #00e5ff; }
-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 15px;
-  background: #151824;
+
+a {
+  color: inherit;
+  text-decoration: none;
 }
+
 button, input {
-  padding: 12px;
-  border: 1px solid #42465c;
-  border-radius: 8px;
-  background: #202434;
-  color: white;
-  font-size: 16px;
+  font: inherit;
 }
-button { cursor: pointer; }
-button:hover, button.active {
-  border-color: #00e5ff;
-  color: #00e5ff;
+
+button {
+  cursor: pointer;
 }
-main {
-  max-width: 1200px;
+
+.rgb-line {
+  height: 4px;
+  background: linear-gradient(
+    90deg, var(--cyan), var(--violeta),
+    var(--rosa), var(--cyan)
+  );
+  background-size: 300% 100%;
+  animation: rgb 7s linear infinite;
+}
+
+@keyframes rgb {
+  to { background-position: 300% 0; }
+}
+
+header {
+  background: #090b16ed;
+  border-bottom: 1px solid #8455ff44;
+  backdrop-filter: blur(15px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  max-width: 1500px;
   margin: auto;
-  padding: 20px;
-}
-.hero {
-  padding: 45px 25px;
-  border-radius: 18px;
-  background: linear-gradient(135deg,#122a40,#352052);
-}
-h1 {
-  font-size: clamp(32px,6vw,60px);
-}
-h1 span { color: #00e5ff; }
-p { line-height: 1.6; color: #c1c6d8; }
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 18px;
 }
-article {
-  padding: 25px;
-  background: #171b28;
-  border: 1px solid #34384c;
-  border-radius: 14px;
+
+.logo {
+  width: 245px;
+  max-width: 75vw;
+  display: block;
 }
-article:hover { border-color: #8b5cf6; }
-a { color: #00e5ff; text-decoration: none; }
-input { width: 100%; margin-bottom: 20px; }
-footer {
+
+.logo-text {
+  font-size: 27px;
+  font-weight: 900;
+  font-style: italic;
+  line-height: .95;
+}
+
+.logo-text span {
+  display: block;
+  color: var(--cyan);
+  margin-left: 18px;
+}
+
+nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+nav button {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  color: var(--gris);
+  padding: 10px 12px;
+  font-size: 13px;
+  transition: .25s;
+}
+
+nav button:hover,
+nav button.active {
+  color: var(--cyan);
+  border-color: #00eaff66;
+  background: #00eaff10;
+  box-shadow: 0 0 14px #00eaff25;
+}
+
+.search {
+  width: 180px;
+  background: #15192b;
+  color: white;
+  border: 1px solid #8455ff66;
+  border-radius: 20px;
+  padding: 10px 15px;
+  outline: none;
+}
+
+.search:focus {
+  border-color: var(--cyan);
+}
+
+main {
+  max-width: 1450px;
+  margin: auto;
   padding: 25px;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+  animation: appear .35s ease;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section-title {
+  font-size: 23px;
+  margin: 32px 0 18px;
+  font-style: italic;
+}
+
+.section-title span {
+  color: var(--cyan);
+}
+
+.carousel-frame {
+  padding: 2px;
+  border-radius: 19px;
+  background: linear-gradient(
+    110deg, var(--cyan), var(--violeta),
+    var(--rosa), var(--cyan)
+  );
+  background-size: 300% 100%;
+  animation: rgb 8s linear infinite;
+  box-shadow: 0 0 25px #8455ff44;
+}
+
+.carousel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 17px;
+}
+
+.track {
+  display: flex;
+  transition: transform .75s cubic-bezier(.22,.8,.2,1);
+}
+
+.slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  min-height: 370px;
+  padding: 55px 65px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.slide::after {
+  content: attr(data-icon);
+  position: absolute;
+  right: 9%;
+  top: 50%;
+  transform: translateY(-50%) rotate(-12deg);
+  font-size: clamp(90px, 18vw, 230px);
+  opacity: .25;
+  pointer-events: none;
+}
+
+.slide.has-image::after {
+  display: none;
+}
+
+.slide-content {
+  position: relative;
+  z-index: 2;
+  max-width: 650px;
+}
+
+.slide h1 {
+  font-size: clamp(30px, 4vw, 57px);
+  font-style: italic;
+  margin: 18px 0;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.slide p {
+  color: #dce3fa;
+  line-height: 1.6;
+  font-size: 17px;
+}
+
+.tag {
+  display: inline-block;
+  background: #8455ff;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 7px 12px;
+  border-radius: 20px;
+}
+
+.action {
+  display: inline-block;
+  border: none;
+  background: linear-gradient(
+    100deg, var(--rosa), var(--violeta), var(--cyan)
+  );
+  color: white;
+  padding: 13px 23px;
+  border-radius: 24px;
+  font-weight: bold;
+  transition: .25s;
+}
+
+.action:hover {
+  box-shadow: 0 0 24px #00eaff66;
+  transform: translateY(-2px);
+}
+
+.shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background: linear-gradient(
+    115deg, transparent 35%,
+    #ffffff12 47%, #ffffff29 50%,
+    transparent 63%
+  );
+  animation: shine 6s infinite;
+}
+
+@keyframes shine {
+  0%, 15% { transform: translateX(-120%); }
+  65%, 100% { transform: translateX(120%); }
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 39px;
+  height: 39px;
+  border: 1px solid #ffffff55;
+  border-radius: 50%;
+  background: #090b16bb;
+  color: white;
+}
+
+.arrow:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.prev { left: 12px; }
+.next { right: 12px; }
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+}
+
+.dot {
+  border: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #8455ff66;
+  padding: 0;
+}
+
+.dot.active {
+  background: var(--cyan);
+  box-shadow: 0 0 12px var(--cyan);
+}
+
+.pause {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+}
+
+.platforms {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+
+.platform {
+  background: linear-gradient(145deg, #1a2035, #0d1120);
+  border: 1px solid var(--color);
+  border-radius: 12px;
+  padding: 22px 8px;
   text-align: center;
-  border-top: 1px solid #34384c;
-  color: #aab2c5;
+  font-weight: bold;
+  transition: .3s;
 }
-[hidden] { display: none !important; }
+
+.platform:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 22px var(--color);
+}
+
+.platform-icon {
+  display: block;
+  font-size: 27px;
+  margin-bottom: 8px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.card {
+  background: #141829;
+  border: 1px solid #8455ff44;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: .3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  border-color: var(--cyan);
+  box-shadow: 0 0 20px #00eaff22;
+}
+
+.card-image {
+  height: 175px;
+  background: linear-gradient(135deg, #17284a, #56247b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 65px;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.card h3 {
+  margin: 12px 0;
+  line-height: 1.4;
+}
+
+.card p {
+  color: var(--gris);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.read-more {
+  color: var(--cyan);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.panel {
+  padding: 28px;
+  background: #141829e8;
+  border: 1px solid #8455ff55;
+  border-radius: 14px;
+  line-height: 1.7;
+}
+
+.notice {
+  color: var(--gris);
+  font-size: 13px;
+  margin: 15px 0;
+}
+
+footer {
+  margin-top: 45px;
+  padding: 30px 20px;
+  text-align: center;
+  background: #090b16;
+  color: var(--gris);
+}
+
+footer strong {
+  color: var(--cyan);
+  letter-spacing: 3px;
+}
+
+@media (max-width: 1000px) {
+  .platforms {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  main {
+    padding: 14px;
+  }
+  .header-content {
+    padding: 12px;
+  }
+  header {
+    position: relative;
+  }
+  .logo {
+    width: 210px;
+  }
+  nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+  }
+  nav button {
+    white-space: nowrap;
+  }
+  .search {
+    width: 100%;
+  }
+  .slide {
+    min-height: 320px;
+    padding: 35px 42px;
+  }
+  .slide p {
+    font-size: 14px;
+  }
+  .platforms {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
 </style>
 </head>
+
 <body>
 
-<header>🎮 CRAFTI <span>GAMING</span></header>
+<header>
+  <div class="rgb-line"></div>
 
-<nav>
-<button class="active" data-tab="inicio">Inicio</button>
-<button data-tab="noticias">Noticias</button>
-<button data-tab="lanzamientos">Lanzamientos</button>
-<button data-tab="plataformas">Plataformas</button>
-<button data-tab="videos">Videos y directos</button>
-<button data-tab="nosotros">Nosotros</button>
-</nav>
+  <div class="header-content">
+
+    <a href="#inicio" aria-label="Crafti Gaming Inicio">
+      <img class="logo" src="logo.png"
+        alt="Crafti Gaming"
+        onerror="this.hidden=true; document.getElementById('logoFallback').hidden=false">
+      <div class="logo-text" id="logoFallback" hidden>
+        CRAFTI
+        <span>GAMING</span>
+      </div>
+    </a>
+
+    <nav aria-label="Menu principal">
+      <button data-page="inicio" class="active">🏠 Inicio</button>
+      <button data-page="noticias">Noticias</button>
+      <button data-page="lanzamientos">Lanzamientos</button>
+      <button data-page="tecnologia">Tecnología</button>
+      <button data-page="plataformas">Plataformas</button>
+      <button data-page="videos">Videos y directos</button>
+      <button data-page="nosotros">Nosotros</button>
+    </nav>
+
+    <input class="search" id="search"
+      type="search" placeholder="🔍 Buscar..."
+      aria-label="Buscar noticias">
+
+  </div>
+</header>
 
 <main>
 
-<section id="inicio">
-<div class="hero">
-<small>DESCUBRE · EXPLORA · JUEGA</small>
-<h1>Bienvenido a <span>Crafti Gaming</span></h1>
-<p>Tu portal de videojuegos, noticias, novedades y entretenimiento gamer.</p>
-<button data-tab="noticias">Explorar noticias</button>
-</div>
+<section id="inicio" class="page active">
 
-<h2>Explora el mundo gamer</h2>
-<div class="grid">
-<article>
-<h2>Fortnite</h2>
-<p>Descubre las novedades oficiales.</p>
-<a href="https://www.fortnite.com/news">Ver novedades</a>
-</article>
-<article>
-<h2>Steam</h2>
-<p>Descubre nuevos videojuegos.</p>
-<a href="https://store.steampowered.com/">Explorar Steam</a>
-</article>
-<article>
-<h2>Próximos estrenos</h2>
-<p>Conoce los juegos que están por llegar.</p>
-<button data-tab="lanzamientos">Ver lanzamientos</button>
-</article>
-</div>
+  <div class="carousel-frame">
+    <div class="carousel" id="carousel">
+      <div class="track" id="track"></div>
+      <div class="shine"></div>
+
+      <button class="arrow prev" id="prev"
+        aria-label="Noticia anterior">❮</button>
+
+      <button class="arrow next" id="next"
+        aria-label="Noticia siguiente">❯</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div id="dots" style="display:flex;gap:10px"></div>
+    <button class="pause" id="pause"
+      aria-label="Pausar carrusel">Ⅱ</button>
+  </div>
+
+  <h2 class="section-title">
+    🎮 Explora nuestras <span>plataformas</span>
+  </h2>
+
+  <div class="platforms" id="homePlatforms"></div>
+
+  <h2 class="section-title">
+    ⚡ Noticias y <span>novedades</span>
+  </h2>
+
+  <div class="cards" id="homeNews"></div>
+
+  <p class="notice" id="status">
+    Explora nuestras fuentes de videojuegos y tecnología.
+  </p>
+
 </section>
 
-<section id="noticias" hidden>
-<h2>Noticias gamer</h2>
-<input id="buscar" placeholder="Buscar noticias o plataformas...">
-<div class="grid" id="lista"></div>
-<p id="estado"></p>
+<section id="noticias" class="page">
+  <h2 class="section-title">
+    📰 Últimas <span>noticias</span>
+  </h2>
+  <div class="cards" id="allNews"></div>
 </section>
 
-<section id="lanzamientos" hidden>
-<h2>Próximos lanzamientos</h2>
-<article>
-<h3>Nuevos videojuegos</h3>
-<a href="https://store.steampowered.com/search/?filter=comingsoon">Consultar próximos estrenos</a>
-</article>
+<section id="lanzamientos" class="page">
+  <h2 class="section-title">
+    🚀 Próximos <span>lanzamientos</span>
+  </h2>
+
+  <div class="panel">
+    Descubre los próximos estrenos y nuevos videojuegos.
+    <br><br>
+    <a class="action"
+      href="https://store.steampowered.com/search/?filter=comingsoon"
+      target="_blank" rel="noopener noreferrer">
+      Próximos juegos en Steam →
+    </a>
+  </div>
+
+  <div class="cards" id="releaseNews"
+    style="margin-top:20px"></div>
 </section>
 
-<section id="plataformas" hidden>
-<h2>Plataformas oficiales</h2>
-<div class="grid">
-<article>
-<h2>Steam</h2>
-<a href="https://store.steampowered.com/">Visitar tienda</a>
-</article>
-<article>
-<h2>Epic Games</h2>
-<a href="https://store.epicgames.com/">Visitar tienda</a>
-</article>
-<article>
-<h2>PlayStation</h2>
-<a href="https://www.playstation.com/es-pe/">Visitar página</a>
-</article>
-<article>
-<h2>Xbox</h2>
-<a href="https://www.xbox.com/es-PE/">Visitar página</a>
-</article>
-</div>
+<section id="tecnologia" class="page">
+  <h2 class="section-title">
+    ⚡ Novedades de <span>tecnología</span>
+  </h2>
+  <div class="cards" id="techNews"></div>
 </section>
 
-<section id="videos" hidden>
-<h2>Videos y directos</h2>
-<article>
-<h3>Próximamente</h3>
-<p>Videos, transmisiones y contenido de Crafti Gaming.</p>
-</article>
+<section id="plataformas" class="page">
+  <h2 class="section-title">
+    🎮 Todas las <span>plataformas</span>
+  </h2>
+  <div class="platforms" id="allPlatforms"></div>
 </section>
 
-<section id="nosotros" hidden>
-<h2>Sobre Crafti Gaming</h2>
-<p>Somos un portal independiente dedicado a los videojuegos, las noticias y el entretenimiento gamer.</p>
-<p>Juega, descubre y disfruta.</p>
+<section id="videos" class="page">
+  <h2 class="section-title">
+    🔴 Videos y <span>directos</span>
+  </h2>
+  <div class="panel">
+    <h2>¡Próximamente!</h2>
+    Aquí encontrarás nuestros videos, transmisiones,
+    momentos divertidos y contenido de Crafti Gaming.
+  </div>
+</section>
+
+<section id="nosotros" class="page">
+  <h2 class="section-title">
+    👾 Somos <span>Crafti Gaming</span>
+  </h2>
+  <div class="panel">
+    <h2>Tu universo gamer y tecnológico</h2>
+    <p>
+      Crafti Gaming es un portal independiente dedicado
+      a los videojuegos, la tecnología y el entretenimiento.
+    </p>
+    <p>
+      Un espacio para descubrir novedades, explorar
+      plataformas y disfrutar del mundo gamer.
+    </p>
+    <p>
+      No somos una página oficial de las marcas
+      o plataformas mencionadas.
+    </p>
+    <strong>¡Juega, descubre y disfruta!</strong>
+  </div>
+</section>
+
+<section id="resultados" class="page">
+  <h2 class="section-title">
+    🔍 Resultados de <span>búsqueda</span>
+  </h2>
+  <div class="cards" id="searchResults"></div>
 </section>
 
 </main>
 
 <footer>
-© 2026 Crafti Gaming · La pasión por jugar nos conecta.
+  <div class="rgb-line"></div>
+  <br>
+  <strong>JUEGA • DESCUBRE • DISFRUTA</strong>
+  <p>Crafti Gaming 2.0</p>
+  <small>
+    © <span id="year"></span> Crafti Gaming.
+    Portal independiente de videojuegos y tecnología.
+  </small>
 </footer>
 
 <script>
-document.querySelectorAll('[data-tab]').forEach(boton => {
-  boton.addEventListener('click', () => {
-    document.querySelectorAll('main > section').forEach(seccion => {
-      seccion.hidden = seccion.id !== boton.dataset.tab;
-    });
-    document.querySelectorAll('nav button').forEach(b => {
-      b.classList.toggle('active', b.dataset.tab === boton.dataset.tab);
-    });
+const platforms = [
+  {
+    name: "Steam", icon: "🎮", color: "#00bde8",
+    url: "https://store.steampowered.com/"
+  },
+  {
+    name: "Epic Games", icon: "⚡", color: "#aeb6cf",
+    url: "https://store.epicgames.com/"
+  },
+  {
+    name: "PlayStation", icon: "🎮", color: "#347aff",
+    url: "https://www.playstation.com/es-pe/"
+  },
+  {
+    name: "Xbox", icon: "✖", color: "#32cd55",
+    url: "https://www.xbox.com/es-PE/"
+  },
+  {
+    name: "Nintendo", icon: "🍄", color: "#ff304f",
+    url: "https://www.nintendo.com/"
+  },
+  {
+    name: "PC Gaming", icon: "🖥️", color: "#b65cff",
+    url: "https://www.pcgamingwiki.com/"
+  }
+];
+
+const fallback = [
+  {
+    titulo: "Descubre el universo de Fortnite",
+    categoria: "Fortnite",
+    descripcion: "Explora las novedades y anuncios oficiales.",
+    url: "https://www.fortnite.com/news",
+    icono: "🎮",
+    color: "#5734a8"
+  },
+  {
+    titulo: "Nintendo: nuevos mundos por descubrir",
+    categoria: "Nintendo",
+    descripcion: "Consulta sus videojuegos y novedades oficiales.",
+    url: "https://www.nintendo.com/",
+    icono: "🍄",
+    color: "#b0204c"
+  },
+  {
+    titulo: "Encuentra tu próximo videojuego",
+    categoria: "Lanzamientos",
+    descripcion: "Explora los próximos estrenos de Steam.",
+    url: "https://store.steampowered.com/search/?filter=comingsoon",
+    icono: "🚀",
+    color: "#14678b"
+  },
+  {
+    titulo: "Hardware y PC Gaming",
+    categoria: "Tecnología",
+    descripcion: "Descubre novedades del mundo tecnológico.",
+    url: "https://www.xataka.com/",
+    icono: "🖥️",
+    color: "#6134a8"
+  },
+  {
+    titulo: "Explora las novedades de PlayStation",
+    categoria: "PlayStation",
+    descripcion: "Consulta los anuncios del blog oficial.",
+    url: "https://blog.es.playstation.com/",
+    icono: "🎮",
+    color: "#124b9a"
+  },
+  {
+    titulo: "Descubre las novedades de Xbox",
+    categoria: "Xbox",
+    descripcion: "Noticias y anuncios de Xbox Wire.",
+    url: "https://news.xbox.com/es-latam/",
+    icono: "✖",
+    color: "#166b3c"
+  },
+  {
+    titulo: "Inteligencia artificial e innovación",
+    categoria: "Tecnología",
+    descripcion: "Explora avances y herramientas digitales.",
+    url: "https://www.xataka.com/categoria/inteligencia-artificial",
+    icono: "⚡",
+    color: "#164c78"
+  }
+];
+
+let news = [...fallback];
+let slides = news.slice(0, 5);
+let current = 0;
+let paused = false;
+let timer;
+
+const reducedMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)"
+);
+
+paused = reducedMotion.matches;
+
+function safeUrl(value) {
+  try {
+    const url = new URL(value, location.href);
+    return ["https:", "http:"].includes(url.protocol)
+      ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
+function make(tag, className, text) {
+  const el = document.createElement(tag);
+  if (className) el.className = className;
+  if (text !== undefined) el.textContent = text;
+  return el;
+}
+
+function externalLink(text, url, className) {
+  const a = make("a", className, text);
+  a.href = safeUrl(url) || "#";
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
+  return a;
+}
+
+function showPage(id) {
+  const page = document.getElementById(id);
+  if (!page || !page.classList.contains("page")) return;
+
+  document.querySelectorAll(".page").forEach(el => {
+    el.classList.toggle("active", el.id === id);
+  });
+
+  document.querySelectorAll("nav button").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.page === id);
+  });
+
+  window.scrollTo({top: 0, behavior: "instant"});
+}
+
+document.querySelectorAll("nav button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.getElementById("search").value = "";
+    showPage(btn.dataset.page);
   });
 });
 
-let noticias = [
-  {titulo:"Noticias oficiales de Fortnite", plataforma:"Fortnite", url:"https://www.fortnite.com/news"},
-  {titulo:"Novedades de Steam", plataforma:"Steam", url:"https://store.steampowered.com/news/"},
-  {titulo:"Noticias de Epic Games", plataforma:"Epic Games", url:"https://store.epicgames.com/es-MX/news"},
-  {titulo:"Blog de PlayStation", plataforma:"PlayStation", url:"https://blog.es.playstation.com/"},
-  {titulo:"Noticias de Xbox", plataforma:"Xbox", url:"https://news.xbox.com/es-latam/"}
-];
+document.querySelector('a[href="#inicio"]').onclick = e => {
+  e.preventDefault();
+  showPage("inicio");
+};
 
-function mostrarNoticias() {
-  const lista = document.getElementById('lista');
-  const buscar = document.getElementById('buscar').value.toLowerCase();
-  lista.replaceChildren();
+function renderPlatforms(id) {
+  const root = document.getElementById(id);
+  root.replaceChildren();
 
-  noticias.filter(n =>
-    (n.titulo + " " + n.plataforma).toLowerCase().includes(buscar)
-  ).forEach(n => {
-    const tarjeta = document.createElement('article');
-    const titulo = document.createElement('h3');
-    titulo.textContent = n.titulo;
-    const enlace = document.createElement('a');
-    enlace.textContent = 'Leer fuente oficial';
-    enlace.href = n.url;
-    tarjeta.append(titulo,enlace);
-    lista.append(tarjeta);
+  platforms.forEach(p => {
+    const a = externalLink("", p.url, "platform");
+    a.style.setProperty("--color", p.color);
+    a.append(
+      make("span", "platform-icon", p.icon),
+      make("span", "", p.name)
+    );
+    root.append(a);
   });
 }
 
-document.getElementById('buscar').addEventListener('input',mostrarNoticias);
-mostrarNoticias();
+function renderCards(id, items) {
+  const root = document.getElementById(id);
+  root.replaceChildren();
 
-async function actualizarNoticias() {
-  try {
-    const respuesta = await fetch('noticias.json',{cache:'no-store'});
-    if (!respuesta.ok) throw new Error();
-    const datos = await respuesta.json();
-    if (Array.isArray(datos.noticias)) {
-      noticias = datos.noticias.filter(n =>
-        typeof n.titulo === 'string' &&
-        typeof n.url === 'string' &&
-        n.url.startsWith('https://')
-      );
-      mostrarNoticias();
+  if (!items.length) {
+    root.append(make("p", "notice",
+      "No hay resultados disponibles en esta sección."));
+    return;
+  }
+
+  items.forEach(n => {
+    const card = make("article", "card");
+    const image = make("div", "card-image");
+
+    if (n.imagen && safeUrl(n.imagen)) {
+      const img = make("img");
+      img.src = safeUrl(n.imagen);
+      img.alt = n.titulo;
+      img.loading = "lazy";
+      img.onerror = () => {
+        image.textContent = n.icono || "🎮";
+      };
+      image.append(img);
+    } else {
+      image.textContent = n.icono || "🎮";
     }
-  } catch {
-    document.getElementById('estado').textContent =
-      'Por ahora puedes consultar nuestras fuentes oficiales.';
+
+    const body = make("div", "card-body");
+
+    body.append(
+      make("span", "tag", n.categoria),
+      make("h3", "", n.titulo),
+      make("p", "", n.descripcion || ""),
+      externalLink("Ver fuente original →", n.url, "read-more")
+    );
+
+    card.append(image, body);
+    root.append(card);
+  });
+}
+
+function renderCarousel() {
+  const track = document.getElementById("track");
+  const dots = document.getElementById("dots");
+
+  track.replaceChildren();
+  dots.replaceChildren();
+
+  slides.forEach((n, i) => {
+    const slide = make("article", "slide");
+
+    slide.dataset.icon = n.icono || "🎮";
+
+    const color = /^#[0-9a-f]{6}$/i.test(n.color || "")
+      ? n.color : "#5734a8";
+
+    slide.style.background =
+      `radial-gradient(circle at 85% 20%, ${color}, transparent 65%), #10172d`;
+
+    if (n.imagen && safeUrl(n.imagen)) {
+      slide.classList.add("has-image");
+      slide.style.backgroundImage =
+        `linear-gradient(90deg,#090b16f5,#090b1688,transparent),url(${JSON.stringify(safeUrl(n.imagen))})`;
+      slide.style.backgroundSize = "cover";
+      slide.style.backgroundPosition = "center";
+    }
+
+    const content = make("div", "slide-content");
+
+    content.append(
+      make("span", "tag", "⚡ " + n.categoria.toUpperCase()),
+      make("h1", "", n.titulo),
+      make("p", "", n.descripcion || ""),
+      externalLink("Explorar novedades →", n.url, "action")
+    );
+
+    slide.append(content);
+    track.append(slide);
+
+    const dot = make("button", "dot");
+    dot.setAttribute("aria-label", "Ir a noticia " + (i + 1));
+    dot.onclick = () => {
+      go(i);
+      restartTimer();
+    };
+    dots.append(dot);
+  });
+
+  go(0);
+}
+
+function go(index) {
+  if (!slides.length) return;
+
+  current = (index + slides.length) % slides.length;
+
+  document.getElementById("track").style.transform =
+    `translateX(-${current * 100}%)`;
+
+  document.querySelectorAll(".dot").forEach((dot, i) => {
+    dot.classList.toggle("active", i === current);
+    dot.setAttribute("aria-current", i === current ? "true" : "false");
+  });
+
+  document.querySelectorAll(".slide").forEach((slide, i) => {
+    slide.inert = i !== current;
+  });
+}
+
+function restartTimer() {
+  clearInterval(timer);
+
+  if (!paused) {
+    timer = setInterval(() => {
+      if (!document.hidden) go(current + 1);
+    }, 6000);
   }
 }
-actualizarNoticias();
+
+document.getElementById("prev").onclick = () => {
+  go(current - 1);
+  restartTimer();
+};
+
+document.getElementById("next").onclick = () => {
+  go(current + 1);
+  restartTimer();
+};
+
+function updatePause() {
+  const button = document.getElementById("pause");
+  button.textContent = paused ? "▶" : "Ⅱ";
+  button.setAttribute("aria-label",
+    paused ? "Reanudar carrusel" : "Pausar carrusel");
+}
+
+document.getElementById("pause").onclick = () => {
+  paused = !paused;
+  updatePause();
+  restartTimer();
+};
+
+let touchStart = 0;
+const carousel = document.getElementById("carousel");
+
+carousel.addEventListener("touchstart", e => {
+  touchStart = e.changedTouches[0].screenX;
+}, {passive: true});
+
+carousel.addEventListener("touchend", e => {
+  const distance = touchStart - e.changedTouches[0].screenX;
+  if (Math.abs(distance) > 50) {
+    go(current + (distance > 0 ? 1 : -1));
+    restartTimer();
+  }
+}, {passive: true});
+
+function normalize(text) {
+  return String(text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+document.getElementById("search").addEventListener("input", e => {
+  const query = normalize(e.target.value.trim());
+
+  if (!query) {
+    showPage("inicio");
+    return;
+  }
+
+  const results = news.filter(n =>
+    normalize(
+      n.titulo + " " + n.categoria + " " + n.descripcion
+    ).includes(query)
+  );
+
+  renderCards("searchResults", results);
+  showPage("resultados");
+});
+
+function renderNews() {
+  renderCards("homeNews", news.slice(0, 6));
+  renderCards("allNews", news);
+
+  renderCards("techNews", news.filter(n =>
+    /tecnologia|hardware|pc gaming|inteligencia artificial/
+      .test(normalize(n.categoria))
+  ));
+
+  renderCards("releaseNews", news.filter(n =>
+    normalize(n.categoria).includes("lanzamiento")
+  ));
+
+  const featured = news.filter(n => n.destacada === true);
+  slides = (featured.length ? featured : news).slice(0, 6);
+
+  renderCarousel();
+  restartTimer();
+}
+
+async function loadNews() {
+  try {
+    const response = await fetch("noticias.json", {
+      cache: "no-store"
+    });
+
+    if (!response.ok) throw new Error("Sin archivo de noticias");
+
+    const data = await response.json();
+
+    if (!Array.isArray(data.noticias)) {
+      throw new Error("Formato incorrecto");
+    }
+
+    const valid = data.noticias
+      .filter(n => n && typeof n.titulo === "string"
+        && safeUrl(n.url))
+      .map(n => ({
+        ...n,
+        categoria: String(n.categoria || n.plataforma || "Videojuegos"),
+        descripcion: String(n.descripcion || "")
+      }));
+
+    if (!valid.length) throw new Error("Sin noticias");
+
+    news = valid;
+    renderNews();
+
+    document.getElementById("status").textContent =
+      "Noticias cargadas desde nuestras fuentes.";
+
+  } catch {
+    document.getElementById("status").textContent =
+      "Por ahora puedes explorar nuestras fuentes oficiales. Las noticias automáticas están pendientes de configurar.";
+  }
+}
+
+document.getElementById("year").textContent =
+  new Date().getFullYear();
+
+renderPlatforms("homePlatforms");
+renderPlatforms("allPlatforms");
+renderNews();
+updatePause();
+loadNews();
+
+setInterval(loadNews, 30 * 60 * 1000);
 </script>
 
 </body>
