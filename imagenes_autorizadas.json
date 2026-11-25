@@ -1,0 +1,15 @@
+
+{
+  "imagenes": [
+    {
+      "categoria": "Nintendo",
+      "palabras_clave": ["nintendo switch"],
+      "excluir": ["switch 2", "switch lite", "oled"],
+      "imagen": "https://commons.wikimedia.org/wiki/Special:FilePath/Nintendo-Switch-wJoyCons-BlRd-Standing-FL.jpg?width=960",
+      "autor": "Evan-Amos",
+      "licencia": "Dominio publico",
+      "tipo": "Imagen referencial",
+      "fuente": "https://commons.wikimedia.org/wiki/File:Nintendo-Switch-wJoyCons-BlRd-Standing-FL.jpg"
+    }
+  ]
+}
