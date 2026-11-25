@@ -1,1 +1,245 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crafti Gaming</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #0b0d14;
+  color: #edf0fa;
+  font-family: Arial, sans-serif;
+}
+header {
+  padding: 25px;
+  font-size: 32px;
+  font-weight: bold;
+  border-top: 4px solid #8b5cf6;
+}
+header span { color: #00e5ff; }
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 15px;
+  background: #151824;
+}
+button, input {
+  padding: 12px;
+  border: 1px solid #42465c;
+  border-radius: 8px;
+  background: #202434;
+  color: white;
+  font-size: 16px;
+}
+button { cursor: pointer; }
+button:hover, button.active {
+  border-color: #00e5ff;
+  color: #00e5ff;
+}
+main {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+.hero {
+  padding: 45px 25px;
+  border-radius: 18px;
+  background: linear-gradient(135deg,#122a40,#352052);
+}
+h1 {
+  font-size: clamp(32px,6vw,60px);
+}
+h1 span { color: #00e5ff; }
+p { line-height: 1.6; color: #c1c6d8; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
+  gap: 18px;
+}
+article {
+  padding: 25px;
+  background: #171b28;
+  border: 1px solid #34384c;
+  border-radius: 14px;
+}
+article:hover { border-color: #8b5cf6; }
+a { color: #00e5ff; text-decoration: none; }
+input { width: 100%; margin-bottom: 20px; }
+footer {
+  padding: 25px;
+  text-align: center;
+  border-top: 1px solid #34384c;
+  color: #aab2c5;
+}
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<header>🎮 CRAFTI <span>GAMING</span></header>
+
+<nav>
+<button class="active" data-tab="inicio">Inicio</button>
+<button data-tab="noticias">Noticias</button>
+<button data-tab="lanzamientos">Lanzamientos</button>
+<button data-tab="plataformas">Plataformas</button>
+<button data-tab="videos">Videos y directos</button>
+<button data-tab="nosotros">Nosotros</button>
+</nav>
+
+<main>
+
+<section id="inicio">
+<div class="hero">
+<small>DESCUBRE · EXPLORA · JUEGA</small>
+<h1>Bienvenido a <span>Crafti Gaming</span></h1>
+<p>Tu portal de videojuegos, noticias, novedades y entretenimiento gamer.</p>
+<button data-tab="noticias">Explorar noticias</button>
+</div>
+
+<h2>Explora el mundo gamer</h2>
+<div class="grid">
+<article>
+<h2>Fortnite</h2>
+<p>Descubre las novedades oficiales.</p>
+<a href="https://www.fortnite.com/news">Ver novedades</a>
+</article>
+<article>
+<h2>Steam</h2>
+<p>Descubre nuevos videojuegos.</p>
+<a href="https://store.steampowered.com/">Explorar Steam</a>
+</article>
+<article>
+<h2>Próximos estrenos</h2>
+<p>Conoce los juegos que están por llegar.</p>
+<button data-tab="lanzamientos">Ver lanzamientos</button>
+</article>
+</div>
+</section>
+
+<section id="noticias" hidden>
+<h2>Noticias gamer</h2>
+<input id="buscar" placeholder="Buscar noticias o plataformas...">
+<div class="grid" id="lista"></div>
+<p id="estado"></p>
+</section>
+
+<section id="lanzamientos" hidden>
+<h2>Próximos lanzamientos</h2>
+<article>
+<h3>Nuevos videojuegos</h3>
+<a href="https://store.steampowered.com/search/?filter=comingsoon">Consultar próximos estrenos</a>
+</article>
+</section>
+
+<section id="plataformas" hidden>
+<h2>Plataformas oficiales</h2>
+<div class="grid">
+<article>
+<h2>Steam</h2>
+<a href="https://store.steampowered.com/">Visitar tienda</a>
+</article>
+<article>
+<h2>Epic Games</h2>
+<a href="https://store.epicgames.com/">Visitar tienda</a>
+</article>
+<article>
+<h2>PlayStation</h2>
+<a href="https://www.playstation.com/es-pe/">Visitar página</a>
+</article>
+<article>
+<h2>Xbox</h2>
+<a href="https://www.xbox.com/es-PE/">Visitar página</a>
+</article>
+</div>
+</section>
+
+<section id="videos" hidden>
+<h2>Videos y directos</h2>
+<article>
+<h3>Próximamente</h3>
+<p>Videos, transmisiones y contenido de Crafti Gaming.</p>
+</article>
+</section>
+
+<section id="nosotros" hidden>
+<h2>Sobre Crafti Gaming</h2>
+<p>Somos un portal independiente dedicado a los videojuegos, las noticias y el entretenimiento gamer.</p>
+<p>Juega, descubre y disfruta.</p>
+</section>
+
+</main>
+
+<footer>
+© 2026 Crafti Gaming · La pasión por jugar nos conecta.
+</footer>
+
+<script>
+document.querySelectorAll('[data-tab]').forEach(boton => {
+  boton.addEventListener('click', () => {
+    document.querySelectorAll('main > section').forEach(seccion => {
+      seccion.hidden = seccion.id !== boton.dataset.tab;
+    });
+    document.querySelectorAll('nav button').forEach(b => {
+      b.classList.toggle('active', b.dataset.tab === boton.dataset.tab);
+    });
+  });
+});
+
+let noticias = [
+  {titulo:"Noticias oficiales de Fortnite", plataforma:"Fortnite", url:"https://www.fortnite.com/news"},
+  {titulo:"Novedades de Steam", plataforma:"Steam", url:"https://store.steampowered.com/news/"},
+  {titulo:"Noticias de Epic Games", plataforma:"Epic Games", url:"https://store.epicgames.com/es-MX/news"},
+  {titulo:"Blog de PlayStation", plataforma:"PlayStation", url:"https://blog.es.playstation.com/"},
+  {titulo:"Noticias de Xbox", plataforma:"Xbox", url:"https://news.xbox.com/es-latam/"}
+];
+
+function mostrarNoticias() {
+  const lista = document.getElementById('lista');
+  const buscar = document.getElementById('buscar').value.toLowerCase();
+  lista.replaceChildren();
+
+  noticias.filter(n =>
+    (n.titulo + " " + n.plataforma).toLowerCase().includes(buscar)
+  ).forEach(n => {
+    const tarjeta = document.createElement('article');
+    const titulo = document.createElement('h3');
+    titulo.textContent = n.titulo;
+    const enlace = document.createElement('a');
+    enlace.textContent = 'Leer fuente oficial';
+    enlace.href = n.url;
+    tarjeta.append(titulo,enlace);
+    lista.append(tarjeta);
+  });
+}
+
+document.getElementById('buscar').addEventListener('input',mostrarNoticias);
+mostrarNoticias();
+
+async function actualizarNoticias() {
+  try {
+    const respuesta = await fetch('noticias.json',{cache:'no-store'});
+    if (!respuesta.ok) throw new Error();
+    const datos = await respuesta.json();
+    if (Array.isArray(datos.noticias)) {
+      noticias = datos.noticias.filter(n =>
+        typeof n.titulo === 'string' &&
+        typeof n.url === 'string' &&
+        n.url.startsWith('https://')
+      );
+      mostrarNoticias();
+    }
+  } catch {
+    document.getElementById('estado').textContent =
+      'Por ahora puedes consultar nuestras fuentes oficiales.';
+  }
+}
+actualizarNoticias();
+</script>
+
+</body>
+</html>
