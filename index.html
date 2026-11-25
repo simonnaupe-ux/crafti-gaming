@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -512,79 +511,27 @@ footer strong {
   }
 }
   
-/* CRAFTI GAMING 2.1 */
-
-.slide {
-  height: 400px;
-  min-height: 400px;
-  padding: 35px 65px;
-}
-
-.slide-content {
-  max-width: 58%;
-}
-
-.slide h1 {
-  font-size: clamp(24px, 2.6vw, 40px);
-  line-height: 1.15;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.slide p {
-  font-size: 15px;
-  margin: 14px 0 22px;
-}
-
-.slide.has-image {
-  background-position: center right !important;
-  background-size: cover !important;
-}
-
-.card-image {
-  height: auto;
-  aspect-ratio: 16 / 9;
-}
-
-.card-image img {
-  object-fit: cover;
-  transition: transform .5s ease;
-}
-
-.card:hover .card-image img {
-  transform: scale(1.04);
-}
-
-.card h3 {
-  font-size: 18px;
-  line-height: 1.4;
-}
-
-.carousel-frame {
-  box-shadow:
-    0 0 20px #8455ff30,
-    0 0 40px #00eaff12;
-}
-
+/* Crafti Gaming 2.1 */
+[hidden] { display: none !important; }
+.carousel, .track { height: 400px; }
+.slide { height: 400px; min-height: 0; padding: 35px 65px; }
+.slide-content { width: 58%; max-width: 650px; }
+.slide h1 { font-size: clamp(24px, 2.6vw, 40px); line-height: 1.15; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.slide p { font-size: 15px; margin: 14px 0 22px; }
+.slide.has-image::after { display: none; }
+.slide-art { position: absolute; right: 0; top: 0; width: 48%; height: 100%; object-fit: cover; mask-image: linear-gradient(90deg, transparent, black 28%); pointer-events: none; }
+.card-image { height: auto; aspect-ratio: 16 / 9; }
+.card-image img { transition: transform .5s ease; }
+.card:hover .card-image img { transform: scale(1.04); }
+.card h3 { font-size: 18px; line-height: 1.4; }
+.carousel-frame { box-shadow: 0 0 20px #8455ff30, 0 0 40px #00eaff12; }
 @media (max-width: 650px) {
-  .slide {
-    height: 360px;
-    min-height: 360px;
-    padding: 30px 45px;
-  }
-
-  .slide-content {
-    max-width: 100%;
-  }
-
-  .slide h1 {
-    font-size: 25px;
-    -webkit-line-clamp: 4;
-  }
+  .carousel, .track, .slide { height: 390px; }
+  .slide { padding: 28px 42px; align-items: flex-end; }
+  .slide-content { width: 100%; max-width: 100%; }
+  .slide h1 { font-size: 25px; -webkit-line-clamp: 4; }
+  .slide-art { width: 100%; height: 55%; mask-image: linear-gradient(180deg, black, transparent); opacity: .65; }
 }
-
 </style>
 </head>
 
@@ -749,7 +696,7 @@ footer strong {
   <div class="rgb-line"></div>
   <br>
   <strong>JUEGA • DESCUBRE • DISFRUTA</strong>
-  <p>Crafti Gaming 2.0</p>
+  <p>Crafti Gaming 2.1</p>
   <small>
     © <span id="year"></span> Crafti Gaming.
     Portal independiente de videojuegos y tecnología.
@@ -982,11 +929,15 @@ function renderCarousel() {
       `radial-gradient(circle at 85% 20%, ${color}, transparent 65%), #10172d`;
 
     if (n.imagen && safeUrl(n.imagen)) {
+      const art = make("img", "slide-art");
+      art.alt = "";
+      art.src = safeUrl(n.imagen);
       slide.classList.add("has-image");
-      slide.style.backgroundImage =
-        `linear-gradient(90deg,#090b16f5,#090b1688,transparent),url(${JSON.stringify(safeUrl(n.imagen))})`;
-      slide.style.backgroundSize = "cover";
-      slide.style.backgroundPosition = "center";
+      art.onerror = () => {
+        art.remove();
+        slide.classList.remove("has-image");
+      };
+      slide.append(art);
     }
 
     const content = make("div", "slide-content");
@@ -998,6 +949,7 @@ function renderCarousel() {
       externalLink("Explorar novedades →", n.url, "action")
     );
 
+    content.querySelector("h1").title = n.titulo;
     slide.append(content);
     track.append(slide);
 
@@ -1126,7 +1078,7 @@ function renderNews() {
 
 async function loadNews() {
   try {
-    const response = await fetch("noticias.json", {
+    const response = await fetch("noticias.json?v=" + Date.now(), {
       cache: "no-store"
     });
 
