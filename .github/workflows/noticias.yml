@@ -19,6 +19,10 @@ jobs:
   actualizar:
     runs-on: ubuntu-latest
 
+    environment:
+      name: github-pages
+      url: ${{ steps.publicar.outputs.page_url }}
+
     steps:
       - name: Obtener archivos
         uses: actions/checkout@v4
@@ -37,10 +41,31 @@ jobs:
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Preparar pagina
-        uses: actions/upload-pages-artifact@v3
+      - name: Preparar archivos publicos
+        run: |
+          mkdir -p _site
+          rsync -av \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='_site/' \
+            --exclude='*.py' \
+            --exclude='__pycache__/' \
+            --exclude='README.md' \
+            ./ _site/
+
+          test -s _site/index.html
+          test -s _site/noticias.json
+          ls -lah _site
+
+      - name: Subir paquete de publicacion
+        uses: actions/upload-pages-artifact@v4
         with:
-          path: '.'
+          name: github-pages
+          path: '_site'
+          retention-days: 1
 
       - name: Publicar Crafti Gaming
+        id: publicar
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
