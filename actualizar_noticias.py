@@ -43,7 +43,48 @@ CARPETA = Path("portadas")
 CARPETA.mkdir(exist_ok=True)
 
 # Añadir aquí imágenes con permiso de reutilización.
-IMAGENES_AUTORIZADAS = {}
+
+def cargar_imagenes():
+    try:
+        datos = json.loads(
+            Path("imagenes_autorizadas.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        return datos.get("imagenes", [])
+    except Exception as error:
+        print(f"Banco de imágenes: {error}")
+        return []
+
+IMAGENES_AUTORIZADAS = cargar_imagenes()
+
+def seleccionar_imagen(titulo, categoria):
+    texto = titulo.casefold()
+
+    for foto in IMAGENES_AUTORIZADAS:
+        if foto.get("categoria") != categoria:
+            continue
+
+        palabras = foto.get("palabras_clave", [])
+        excluir = foto.get("excluir", [])
+
+        if any(p.casefold() in texto for p in excluir):
+            continue
+
+        if palabras and any(
+            p.casefold() in texto for p in palabras
+        ):
+            if foto.get("imagen", "").startswith("https://"):
+                return foto
+
+    return {
+        "imagen": PORTADAS[categoria],
+        "autor": "Crafti Gaming",
+        "licencia": "",
+        "tipo": "Portada RGB",
+        "fuente": ""
+    }
+
 
 noticias = []
 vistos = set()
@@ -253,10 +294,10 @@ for categoria, fuente, url in FUENTES:
                 ("#8455ff", "🎮")
             )
 
-            imagen = IMAGENES_AUTORIZADAS.get(
-                enlace,
-                PORTADAS[categoria_final]
-            )
+
+            foto = seleccionar_imagen(titulo, categoria_final)
+            imagen = foto["imagen"]
+
 
             noticia = {
                 "titulo": titulo,
@@ -266,6 +307,10 @@ for categoria, fuente, url in FUENTES:
                 "fuente": fuente,
                 "url": enlace,
                 "imagen": imagen,
+                "imagen_autor": foto.get("autor", ""),
+                "imagen_licencia": foto.get("licencia", ""),
+                "imagen_tipo": foto.get("tipo", ""),
+                "imagen_fuente": foto.get("fuente", ""),
                 "icono": icono,
                 "color": color,
                 "timestamp": timestamp,
