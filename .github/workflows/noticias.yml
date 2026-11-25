@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: '7,37 * * * *'
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -18,10 +21,6 @@ concurrency:
 jobs:
   actualizar:
     runs-on: ubuntu-latest
-
-    environment:
-      name: github-pages
-      url: ${{ steps.publicar.outputs.page_url }}
 
     steps:
       - name: Obtener archivos
@@ -64,8 +63,20 @@ jobs:
           path: '_site'
           retention-days: 1
 
+  publicar:
+    needs: actualizar
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Esperar disponibilidad del paquete
+        run: sleep 30
+
       - name: Publicar Crafti Gaming
-        id: publicar
+        id: deployment
         uses: actions/deploy-pages@v4
         with:
           artifact_name: github-pages
