@@ -511,6 +511,80 @@ footer strong {
     scroll-behavior: auto !important;
   }
 }
+  
+/* CRAFTI GAMING 2.1 */
+
+.slide {
+  height: 400px;
+  min-height: 400px;
+  padding: 35px 65px;
+}
+
+.slide-content {
+  max-width: 58%;
+}
+
+.slide h1 {
+  font-size: clamp(24px, 2.6vw, 40px);
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.slide p {
+  font-size: 15px;
+  margin: 14px 0 22px;
+}
+
+.slide.has-image {
+  background-position: center right !important;
+  background-size: cover !important;
+}
+
+.card-image {
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
+.card-image img {
+  object-fit: cover;
+  transition: transform .5s ease;
+}
+
+.card:hover .card-image img {
+  transform: scale(1.04);
+}
+
+.card h3 {
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.carousel-frame {
+  box-shadow:
+    0 0 20px #8455ff30,
+    0 0 40px #00eaff12;
+}
+
+@media (max-width: 650px) {
+  .slide {
+    height: 360px;
+    min-height: 360px;
+    padding: 30px 45px;
+  }
+
+  .slide-content {
+    max-width: 100%;
+  }
+
+  .slide h1 {
+    font-size: 25px;
+    -webkit-line-clamp: 4;
+  }
+}
+
 </style>
 </head>
 
