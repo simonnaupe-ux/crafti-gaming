@@ -532,6 +532,14 @@ footer strong {
   .slide h1 { font-size: 25px; -webkit-line-clamp: 4; }
   .slide-art { width: 100%; height: 55%; mask-image: linear-gradient(180deg, black, transparent); opacity: .65; }
 }
+
+.editorial-cover { width:100%; max-height:340px; object-fit:cover; border-radius:14px; margin:12px 0; }
+.editorial-text { max-width:850px; margin:auto; line-height:1.85; overflow-wrap:anywhere; }
+.editorial-text h1 { font-size:clamp(26px,4vw,44px); }
+.read-more { background:none; border:0; padding:8px 0; text-align:left; }
+.section-art { height:150px; border-radius:14px; margin:0 0 20px; background:linear-gradient(120deg,#141829,#5734a8); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.section-art img { width:100%; height:100%; object-fit:cover; }
+.slide p { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
 </style>
 </head>
 
@@ -555,6 +563,7 @@ footer strong {
     <nav aria-label="Menu principal">
       <button data-page="inicio" class="active">🏠 Inicio</button>
       <button data-page="noticias">Noticias</button>
+      <button data-page="articulos">Artículos</button>
       <button data-page="lanzamientos">Lanzamientos</button>
       <button data-page="tecnologia">Tecnología</button>
       <button data-page="plataformas">Plataformas</button>
@@ -604,12 +613,17 @@ footer strong {
 
   <div class="cards" id="homeNews"></div>
 
+  <h2 class="section-title">✍️ Selección <span>editorial</span></h2><div class="cards" id="homeEditorial"></div>
   <p class="notice" id="status">
     Explora nuestras fuentes de videojuegos y tecnología.
   </p>
 
 </section>
 
+<section id="articulos" class="page">
+<h2 class="section-title">✍️ Artículos <span>Crafti Gaming</span></h2>
+<div class="cards" id="editorialNews"></div></section>
+<section id="lector" class="page"><article class="panel editorial-text" id="articleBody"></article></section>
 <section id="noticias" class="page">
   <h2 class="section-title">
     📰 Últimas <span>noticias</span>
@@ -696,7 +710,7 @@ footer strong {
   <div class="rgb-line"></div>
   <br>
   <strong>JUEGA • DESCUBRE • DISFRUTA</strong>
-  <p>Crafti Gaming 2.1</p>
+  <p>Crafti Gaming 2.2</p>
   <small>
     © <span id="year"></span> Crafti Gaming.
     Portal independiente de videojuegos y tecnología.
@@ -790,7 +804,9 @@ const fallback = [
   }
 ];
 
+const editorial = [{"titulo": "Cómo elegir una PC para gaming", "categoria": "Tecnología", "contenido": "Antes de comprar, define qué juegos quieres disfrutar y a qué resolución. Una computadora equilibrada puede ofrecer una buena experiencia sin recurrir a los componentes más caros.\n\nEl procesador y la tarjeta gráfica deben complementarse. Revisa pruebas de rendimiento de los juegos que te interesan y compara equipos completos, no solamente una pieza.\n\nConsidera también la memoria, el almacenamiento SSD, una fuente de alimentación adecuada y la ventilación. Reserva parte del presupuesto para los periféricos que realmente necesitas.", "descripcion": "Antes de comprar, define qué juegos quieres disfrutar y a qué resolución. Una computadora equilibrada puede ofrecer una buena experiencia sin recurrir a los componentes más caros.", "fuente": "Crafti Gaming", "tipo_contenido": "Editorial", "imagen": "portadas/categoria-5.svg", "imagen_autor": "Crafti Gaming", "imagen_tipo": "Ilustración RGB", "color": "#6134a8", "icono": "⚡"}, {"titulo": "Primeros pasos en Fortnite Creativo", "categoria": "Fortnite", "contenido": "El modo Creativo permite explorar experiencias de la comunidad y diseñar espacios propios. Empieza con una isla pequeña y un objetivo fácil de entender.\n\nPrueba las reglas, los puntos de aparición y el marcador antes de añadir decoración. Invita a amigos a probar la experiencia y escucha sus comentarios.\n\nUna isla clara y divertida puede ser más interesante que un escenario enorme sin objetivos definidos.", "descripcion": "El modo Creativo permite explorar experiencias de la comunidad y diseñar espacios propios. Empieza con una isla pequeña y un objetivo fácil de entender.", "fuente": "Crafti Gaming", "tipo_contenido": "Editorial", "imagen": "portadas/categoria-0.svg", "imagen_autor": "Crafti Gaming", "imagen_tipo": "Ilustración RGB", "color": "#5734a8", "icono": "🎮"}, {"titulo": "Cómo elegir tu próximo videojuego", "categoria": "Lanzamientos", "contenido": "Antes de comprar un juego, revisa su género, plataformas compatibles y clasificación por edades. Los tráileres muestran una parte de la experiencia, pero las demostraciones y reseñas pueden aportar más contexto.\n\nComprueba los requisitos del sistema si juegas en PC y si el título requiere conexión permanente o compras adicionales.\n\nOrganiza una lista de deseos y compara precios sin apresurarte. No necesitas comprar todos los estrenos para disfrutar del mundo gamer.", "descripcion": "Antes de comprar un juego, revisa su género, plataformas compatibles y clasificación por edades. Los tráileres muestran una parte de la experiencia, pero las demostraciones y reseñas pueden aportar más contexto.", "fuente": "Crafti Gaming", "tipo_contenido": "Editorial", "imagen": "portadas/categoria-6.svg", "imagen_autor": "Crafti Gaming", "imagen_tipo": "Ilustración RGB", "color": "#a83280", "icono": "🚀"}];
 let news = [...fallback];
+let ownNews = [...editorial];
 let slides = news.slice(0, 5);
 let current = 0;
 let paused = false;
@@ -803,6 +819,7 @@ const reducedMotion = window.matchMedia(
 paused = reducedMotion.matches;
 
 function safeUrl(value) {
+  if (typeof value !== "string" || !value.trim()) return null;
   try {
     const url = new URL(value, location.href);
     return ["https:", "http:"].includes(url.protocol)
@@ -869,6 +886,30 @@ function renderPlatforms(id) {
   });
 }
 
+function readButton(n, cls) {
+  const b = make("button", cls, n.contenido ? "Leer artículo →" : "Ver ficha de noticia →");
+  b.onclick = () => openArticle(n);
+  return b;
+}
+function openArticle(n) {
+  const previous = document.querySelector(".page.active")?.id || "inicio";
+  const root = document.getElementById("articleBody");
+  root.replaceChildren();
+  const back = make("button", "read-more", "← Volver");
+  back.onclick = () => showPage(previous === "lector" ? "inicio" : previous);
+  root.append(back, make("p", "tag", n.categoria), make("h1", "", n.titulo), make("p", "notice", n.fuente || "Crafti Gaming"));
+  if (safeUrl(n.imagen)) {
+    const img = make("img", "editorial-cover"); img.src = safeUrl(n.imagen); img.alt = "Ilustración del tema"; img.onerror = () => img.remove(); root.append(img);
+    root.append(make("p", "notice", [n.imagen_tipo,n.imagen_autor,n.imagen_licencia].filter(Boolean).join(" · ")));
+    if (safeUrl(n.imagen_fuente)) root.append(externalLink("Créditos de imagen",n.imagen_fuente,"read-more"));
+  }
+  const content = typeof n.contenido === "string" ? n.contenido.trim() : "";
+  if (content) content.split(/\n+/).filter(Boolean).forEach(p => root.append(make("p","",p)));
+  else root.append(make("p","",n.descripcion || "Consulta la fuente original."),make("p","notice","Esta noticia aún no tiene un resumen editorial propio."));
+  if (safeUrl(n.url)) root.append(externalLink("Consultar fuente original →",n.url,"action"));
+  showPage("lector");
+}
+
 function renderCards(id, items) {
   const root = document.getElementById(id);
   root.replaceChildren();
@@ -902,7 +943,7 @@ function renderCards(id, items) {
       make("span", "tag", n.categoria),
       make("h3", "", n.titulo),
       make("p", "", n.descripcion || ""),
-      externalLink("Ver fuente original →", n.url, "read-more")
+      readButton(n, "read-more")
     );
 
     card.append(image, body);
@@ -946,7 +987,7 @@ function renderCarousel() {
       make("span", "tag", "⚡ " + n.categoria.toUpperCase()),
       make("h1", "", n.titulo),
       make("p", "", n.descripcion || ""),
-      externalLink("Explorar novedades →", n.url, "action")
+      readButton(n, "action")
     );
 
     content.querySelector("h1").title = n.titulo;
@@ -1046,9 +1087,9 @@ document.getElementById("search").addEventListener("input", e => {
     return;
   }
 
-  const results = news.filter(n =>
+  const results = [...news, ...ownNews].filter(n =>
     normalize(
-      n.titulo + " " + n.categoria + " " + n.descripcion
+      n.titulo + " " + n.categoria + " " + n.descripcion + " " + (n.contenido || "")
     ).includes(query)
   );
 
@@ -1057,6 +1098,8 @@ document.getElementById("search").addEventListener("input", e => {
 });
 
 function renderNews() {
+  renderCards("editorialNews", ownNews);
+  renderCards("homeEditorial", ownNews.slice(0,3));
   renderCards("homeNews", news.slice(0, 6));
   renderCards("allNews", news);
 
@@ -1092,7 +1135,7 @@ async function loadNews() {
 
     const valid = data.noticias
       .filter(n => n && typeof n.titulo === "string"
-        && safeUrl(n.url))
+        && (safeUrl(n.url) || (typeof n.contenido === "string" && n.contenido.trim())))
       .map(n => ({
         ...n,
         categoria: String(n.categoria || n.plataforma || "Videojuegos"),
@@ -1101,7 +1144,9 @@ async function loadNews() {
 
     if (!valid.length) throw new Error("Sin noticias");
 
-    news = valid;
+    ownNews = [...editorial, ...valid.filter(n => n.contenido && !editorial.some(e => e.titulo === n.titulo))];
+    news = valid.filter(n => !n.contenido);
+    if (!news.length) news = [...fallback];
     renderNews();
 
     document.getElementById("status").textContent =
@@ -1116,6 +1161,12 @@ async function loadNews() {
 document.getElementById("year").textContent =
   new Date().getFullYear();
 
+for (const [id,num] of Object.entries({noticias:7,articulos:0,lanzamientos:6,tecnologia:5,plataformas:2,videos:0,nosotros:7})) {
+  const section = document.getElementById(id);
+  const art = make("div","section-art");
+  const img = make("img"); img.src = `portadas/categoria-${num}.svg`; img.alt = "Ilustración temática"; img.onerror = () => {art.textContent = "CRAFTI GAMING";}; art.append(img);
+  section.querySelector("h2").after(art);
+}
 renderPlatforms("homePlatforms");
 renderPlatforms("allPlatforms");
 renderNews();
