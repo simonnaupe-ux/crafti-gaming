@@ -35,7 +35,7 @@ jobs:
         run: pip install feedparser
 
       - name: Actualizar noticias
-        run: python actualizar_noticias.py
+        run: python update_news.py
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
@@ -53,7 +53,7 @@ jobs:
             ./ _site/
 
           test -s _site/index.html
-          test -s _site/noticias.json
+          test -s _site/news.json
           ls -lah _site
 
       - name: Subir paquete de publicacion
