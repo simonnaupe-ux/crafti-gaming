@@ -31,12 +31,6 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Instalar dependencias
-        run: pip install feedparser
-
-      - name: Actualizar noticias
-        run: python update_news.py
-
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
 
@@ -50,8 +44,10 @@ jobs:
             --exclude='*.py' \
             --exclude='__pycache__/' \
             --exclude='README.md' \
+            --exclude='imagenes_autorizadas.json' \
             ./ _site/
 
+          python update_news.py --output _site/news.json
           test -s _site/index.html
           test -s _site/news.json
           ls -lah _site
@@ -72,9 +68,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Esperar disponibilidad del paquete
-        run: sleep 30
-
       - name: Publicar Crafti Gaming
         id: deployment
         uses: actions/deploy-pages@v4
