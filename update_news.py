@@ -26,16 +26,22 @@ FEEDS = (
     ("PlayStation", "PlayStation Blog", "https://blog.es.playstation.com/feed/"),
     ("Videojuegos", "3DJuegos", "https://www.3djuegos.com/index.xml"),
     ("Videojuegos", "Vandal", "https://vandal.elespanol.com/xml.cgi"),
+    ("Ciencia y espacio", "NASA en español", "https://ciencia.nasa.gov/feed/"),
+    ("Ciencia y espacio", "Agencia SINC", "https://www.agenciasinc.es/rss/feed"),
     ("Tecnología", "Xataka", "https://www.xataka.com/index.xml"),
+    ("Inteligencia artificial", "Google AI", "https://blog.google/technology/ai/rss/"),
+    ("Ciencia y espacio", "NASA", "https://www.nasa.gov/rss/dyn/breaking_news.rss"),
+    ("Inteligencia artificial", "OpenAI", "https://openai.com/news/rss.xml"),
 )
 COVER = {
     "Xbox": 3, "PlayStation": 3, "Nintendo": 3, "PC Gaming": 5,
     "GOTY": 1, "Lanzamientos": 6, "Tecnología": 5,
-    "Inteligencia artificial": 4, "Videojuegos": 0,
+    "Inteligencia artificial": 4, "Videojuegos": 0, "Ciencia y espacio": 5,
 }
 TOPICS = (
+    ("Ciencia y espacio", r"spacex|starship|starlink|\bnasa\b|astronomía|espacial"),
     ("GOTY", r"\bgoty\b|the game awards|juego del año"),
-    ("Inteligencia artificial", r"inteligencia artificial|\bia\b|chatgpt|openai"),
+    ("Inteligencia artificial", r"inteligencia artificial|\bia\b|chatgpt|openai|artificial intelligence|gemini|claude"),
     ("Nintendo", r"nintendo|pokémon|zelda|\bswitch\b"),
     ("PlayStation", r"playstation|\bps[45]\b"),
     ("Xbox", r"xbox|game pass"),
@@ -97,7 +103,20 @@ def fetch_feed(default, source, url):
             raw = stream.read(MAX_FEED_BYTES + 1)
     if len(raw) > MAX_FEED_BYTES:
         raise ValueError("El feed excede el tamaño permitido")
-    items = ET.fromstring(raw).findall("./channel/item")
+    root = ET.fromstring(raw)
+    items = root.findall("./channel/item")
+    if not items:
+        ns = {"a": "http://www.w3.org/2005/Atom"}
+        items = []
+        for entry in root.findall("a:entry", ns):
+            item = ET.Element("item")
+            for target, source_tag in (("title", "title"), ("description", "summary"), ("pubDate", "published")):
+                ET.SubElement(item, target).text = entry.findtext("a:" + source_tag, "", ns)
+            if not item.findtext("pubDate"):
+                item.find("pubDate").text = entry.findtext("a:updated", "", ns)
+            link = next((x.get("href", "") for x in entry.findall("a:link", ns) if x.get("rel", "alternate") == "alternate"), "")
+            ET.SubElement(item, "link").text = link
+            items.append(item)
     now = datetime.now(timezone.utc)
     articles = []
     for item in items[:25]:
@@ -170,12 +189,6 @@ def with_image(article, bank):
     for entry in bank:
         if entry["categoria"] == category and all(entry.get(k) for k in ("autor","licencia","fuente","imagen")) and any(t.casefold() in title for t in entry["palabras_clave"]) and not any(t.casefold() in title for t in entry.get("excluir",[])):
             return dict(article,image=entry["imagen"],imagen_autor=entry["autor"],imagen_licencia=entry["licencia"],imagen_fuente=entry["fuente"],imagen_tipo=entry["tipo"])
-    if not OFFLINE:
-        for pattern,subject in SUBJECTS:
-            if re.search(pattern,title,re.I):
-                result=commons_image(subject)
-                if result: return dict(article,**result)
-                break
     return original_cover(article)
 
 def build_catalog(reviewed, automatic, bank):
@@ -206,8 +219,8 @@ def main():
     bank = json.loads((ROOT / "imagenes_autorizadas.json").read_text(encoding="utf-8-sig"))
     reviewed = [article for article in seed["articles"]
                 if article.get("tipo_contenido") == "Noticia propia"]
-    if not reviewed:
-        raise SystemExit("El catálogo revisado está vacío")
+    if not seed.get("articles"):
+        raise SystemExit("El catálogo está vacío")
 
     automatic = []
     if not args.offline:
@@ -215,9 +228,14 @@ def main():
             for articles in executor.map(collect_feed, FEEDS):
                 automatic.extend(articles)
         if not automatic:
-            print("Fuentes indisponibles. Se publica el catálogo revisado.")
+            print("Fuentes indisponibles. Se conserva el catálogo anterior.")
     automatic.sort(key=lambda article: publication(article["published"]), reverse=True)
-    catalog = build_catalog(reviewed, automatic[:80], bank["imagenes"])
+    # Conservar noticias anteriores ante fallos parciales o totales de RSS.
+    previous = [a for a in seed["articles"] if a.get("tipo_contenido") != "Noticia propia"]
+    combined = sorted([*automatic, *previous], key=lambda a: publication(a["published"]), reverse=True)
+    catalog = build_catalog(reviewed, combined, bank["imagenes"])
+    catalog["articles"] = [a for a in catalog["articles"] if a.get("tipo_contenido") == "Noticia propia"] + [a for a in catalog["articles"] if a.get("tipo_contenido") != "Noticia propia"][:160]
+    catalog["articles"].sort(key=lambda a: publication(a["published"]), reverse=True)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", delete=False,
                                      dir=args.output.parent) as output:

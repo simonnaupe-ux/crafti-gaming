@@ -1,6 +1,29 @@
 {
   "articles": [
     {
+      "title": "Artemis II: qué aporta el vuelo lunar a la investigación científica",
+      "category": "Ciencia y espacio",
+      "source": "NASA",
+      "published": "2026-11-27",
+      "url": "https://www.nasa.gov/humans-in-space/artemis-ii-science",
+      "summary": "Análisis retrospectivo de las observaciones lunares y del trabajo científico de la tripulación.",
+      "tipo_contenido": "Noticia propia",
+      "contenido": "La exploración lunar no consiste únicamente en llegar a un destino. También exige aprender a observar, documentar y evaluar un entorno que presenta condiciones muy distintas de las terrestres. Artemis II permite examinar ese trabajo desde la perspectiva de la investigación y de la preparación de futuras expediciones.\n\nLa misión tuvo lugar entre el 1 y el 10 de abril de 2026, según el registro oficial de NASA. La tripulación viajó alrededor de la Luna y regresó a la Tierra. Durante el trayecto, los astronautas registraron observaciones de la superficie lunar que complementan la información obtenida por instrumentos y misiones anteriores.\n\n¿Por qué importa la observación humana? Una fotografía permite conservar detalles visuales para un análisis posterior, mientras que una descripción aporta el contexto de aquello que llamó la atención del observador. Cuando se combinan ambos recursos, los investigadores pueden formular preguntas sobre las diferencias entre regiones de la superficie. Eso no significa que cada observación constituya por sí misma un descubrimiento confirmado.\n\nNASA informa que la tripulación recibió preparación geológica y examinó cráteres y regiones asociadas con antiguos flujos volcánicos. Esta preparación resulta importante porque la interpretación científica depende de distinguir entre lo observado directamente y las hipótesis que podrían explicar su origen.\n\nEl trabajo tampoco termina en la nave. Los equipos de investigación en tierra proporcionaron apoyo científico durante la misión. La colaboración entre investigadores y astronautas permite relacionar el contexto geológico con las observaciones de la tripulación y ayuda a identificar preguntas que merecen estudios adicionales.\n\nOtro aspecto es la meteorología espacial. NASA y NOAA realizaron seguimiento del entorno solar durante el vuelo. La experiencia reunida contribuye a evaluar cómo organizar futuras operaciones lejos de la Tierra. No debe interpretarse como una garantía de que todos los riesgos de expediciones posteriores hayan quedado resueltos.\n\nDesde la perspectiva editorial de Crafti Gaming, el valor de esta misión está en el aprendizaje acumulado: la exploración es un proceso de comprobación progresiva. Las futuras misiones tendrán sus propias exigencias y no conviene confundir los objetivos de una prueba de vuelo con los de una expedición de superficie.\n\nPara seguir el tema, recomendamos revisar los materiales científicos y los datos publicados por NASA, distinguiendo los resultados ya documentados de las expectativas sobre futuras misiones. Este artículo es un análisis retrospectivo, no una noticia de lanzamiento reciente ni una entrevista propia.",
+      "expertos": [
+        {
+          "nombre": "Cindy Evans, responsable de formación geológica de Artemis en NASA",
+          "comentario": "La documentación de NASA identifica a Evans como responsable de la formación geológica y muestra su trabajo de campo con Christina Koch en Islandia. Es una descripción verificable de su contribución, no una cita ni una opinión atribuida.",
+          "url": "https://www.nasa.gov/humans-in-space/artemis-ii-science/"
+        }
+      ],
+      "id": "27cfbecb689b5383",
+      "image": "portadas/noticia-27cfbecb689b5383.svg",
+      "imagen_autor": "Crafti Gaming",
+      "imagen_tipo": "Portada editorial original",
+      "imagen_licencia": "",
+      "imagen_fuente": ""
+    },
+    {
       "category": "Xbox",
       "source": "Xbox Wire",
       "published": "2026-11-26",
@@ -10,9 +33,11 @@
       "contenido": "Del 26 al 29 de noviembre, los miembros de Game Pass Ultimate, Premium y Essential pueden probar dos juegos a través de Free Play Days.\n\nLa selección reúne dos propuestas distintas. Warhammer 40,000: Mechanicus es un juego de estrategia por turnos, mientras que Little Rocket Lab gira en torno a construir y automatizar. Xbox indica que los títulos se pueden instalar desde la colección Free Play Days de la tienda de la consola con una cuenta que tenga una suscripción compatible.",
       "tipo_contenido": "Noticia propia",
       "id": "9a03c4757e306ba5",
-      "image": "portadas/categoria-3.svg",
+      "image": "portadas/noticia-9a03c4757e306ba5.svg",
       "imagen_autor": "Crafti Gaming",
-      "imagen_tipo": "Ilustración temática propia"
+      "imagen_tipo": "Portada editorial original",
+      "imagen_licencia": "",
+      "imagen_fuente": ""
     },
     {
       "category": "PlayStation",
@@ -24,9 +49,11 @@
       "contenido": "La nueva historia lleva a Nikki y Momo a Cicia y Ceremius, dos ciudades que comparten origen pero ofrecen actividades diferentes.\n\nInfold Games explica que la actualización amplía las opciones de exploración. Nikki puede dar un segundo salto en el aire y usar la alquimia para preparar pociones. En Cicia hay actividades como conducir y atender un negocio, mientras que en Ceremius la aventura incluye restaurar reliquias e investigar el pasado de la ciudad.",
       "tipo_contenido": "Noticia propia",
       "id": "d0b2fd2a939e5128",
-      "image": "portadas/categoria-3.svg",
+      "image": "portadas/noticia-d0b2fd2a939e5128.svg",
       "imagen_autor": "Crafti Gaming",
-      "imagen_tipo": "Ilustración temática propia"
+      "imagen_tipo": "Portada editorial original",
+      "imagen_licencia": "",
+      "imagen_fuente": ""
     },
     {
       "category": "PlayStation",
@@ -38,9 +65,11 @@
       "contenido": "Sony eligió Tony Hawk’s Pro Skater 3+4, Dragon Ball Xenoverse 2 y Amnesia: The Bunker para su selección mensual de diciembre.\n\nEl anuncio reúne tres géneros en una misma tanda de juegos mensuales. La primera propuesta se centra en el skate, la segunda en los combates de Dragon Ball y la tercera en la supervivencia dentro de un búnker. El Blog de PlayStation recoge los detalles de disponibilidad de cada título.",
       "tipo_contenido": "Noticia propia",
       "id": "a38eb27864fc3f28",
-      "image": "portadas/categoria-3.svg",
+      "image": "portadas/noticia-a38eb27864fc3f28.svg",
       "imagen_autor": "Crafti Gaming",
-      "imagen_tipo": "Ilustración temática propia"
+      "imagen_tipo": "Portada editorial original",
+      "imagen_licencia": "",
+      "imagen_fuente": ""
     },
     {
       "category": "Xbox",
@@ -52,9 +81,11 @@
       "contenido": "Xbox Wire entrevistó al primer jugador que alcanzó los diez millones de Gamerscore, una marca que consiguió en septiembre.\n\nSiegfriedX inició su colección de logros en Xbox 360. Según la entrevista, llevaba dos décadas jugando y había pasado por más de 6.400 títulos. El salto definitivo llegó el 9 de septiembre de 2026, cuando un logro de 110 puntos llevó su puntuación acumulada a ocho cifras.",
       "tipo_contenido": "Noticia propia",
       "id": "332c898bda6c29d3",
-      "image": "portadas/categoria-3.svg",
+      "image": "portadas/noticia-332c898bda6c29d3.svg",
       "imagen_autor": "Crafti Gaming",
-      "imagen_tipo": "Ilustración temática propia"
+      "imagen_tipo": "Portada editorial original",
+      "imagen_licencia": "",
+      "imagen_fuente": ""
     },
     {
       "category": "PC Gaming",
@@ -66,9 +97,11 @@
       "contenido": "Una versión beta del cliente guarda los iconos de logros en el equipo para que se puedan ver al jugar sin conexión.\n\nEl cambio afecta a la presentación de los logros. Valve explica en las notas de la beta que los iconos se almacenan en disco para que estén disponibles tanto en el cliente como en la interfaz durante la partida.",
       "tipo_contenido": "Noticia propia",
       "id": "f64069b5dee5c620",
-      "image": "portadas/categoria-5.svg",
+      "image": "portadas/noticia-f64069b5dee5c620.svg",
       "imagen_autor": "Crafti Gaming",
-      "imagen_tipo": "Ilustración temática propia"
+      "imagen_tipo": "Portada editorial original",
+      "imagen_licencia": "",
+      "imagen_fuente": ""
     },
     {
       "category": "GOTY",
@@ -80,9 +113,11 @@
       "contenido": "Tras el anuncio de las nominaciones, el público puede votar antes de la gala del 10 de diciembre.\n\nEntre los títulos que Xbox Wire destaca en varias categorías figuran Gears of War: E-Day, Grand Theft Auto VI y Resident Evil Requiem. La lista de nominados permite consultar las candidaturas antes de que se anuncien los resultados en la ceremonia.",
       "tipo_contenido": "Noticia propia",
       "id": "13a7536142fb63ed",
-      "image": "portadas/categoria-1.svg",
+      "image": "portadas/noticia-13a7536142fb63ed.svg",
       "imagen_autor": "Crafti Gaming",
-      "imagen_tipo": "Ilustración temática propia"
+      "imagen_tipo": "Portada editorial original",
+      "imagen_licencia": "",
+      "imagen_fuente": ""
     },
     {
       "category": "Lanzamientos",
@@ -94,9 +129,11 @@
       "contenido": "Silver Lining Interactive presentó una aventura canina prevista para PlayStation 5 en 2027.\n\nEl equipo utilizó el Blog de PlayStation para explicar cómo está construyendo la aventura desde la perspectiva de un perro. La publicación presenta el proyecto y su ventana de lanzamiento en PS5.",
       "tipo_contenido": "Noticia propia",
       "id": "d975e9c70547a4b2",
-      "image": "portadas/categoria-6.svg",
+      "image": "portadas/noticia-d975e9c70547a4b2.svg",
       "imagen_autor": "Crafti Gaming",
-      "imagen_tipo": "Ilustración temática propia"
+      "imagen_tipo": "Portada editorial original",
+      "imagen_licencia": "",
+      "imagen_fuente": ""
     },
     {
       "category": "Nintendo",
@@ -108,11 +145,11 @@
       "contenido": "Nintendo informó de 65,73 millones de juegos de su primera Switch entre abril y septiembre de 2026, un 6,8 % más que un año antes.\n\nEn el mismo periodo, Switch 2 registró 24,49 millones de juegos, un avance interanual del 18,8 %. Nintendo presenta ambas cifras como ventas a canales de distribución, incluidas las realizadas mediante sus propios canales directos.",
       "tipo_contenido": "Noticia propia",
       "id": "9681b16822fa782a",
-      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Nintendo-Switch-wJoyCons-BlRd-Standing-FL.jpg?width=960",
-      "imagen_autor": "Evan-Amos",
-      "imagen_licencia": "Dominio publico",
-      "imagen_fuente": "https://commons.wikimedia.org/wiki/File:Nintendo-Switch-wJoyCons-BlRd-Standing-FL.jpg",
-      "imagen_tipo": "Imagen referencial"
+      "image": "portadas/noticia-9681b16822fa782a.svg",
+      "imagen_autor": "Crafti Gaming",
+      "imagen_licencia": "",
+      "imagen_fuente": "",
+      "imagen_tipo": "Portada editorial original"
     }
   ]
 }

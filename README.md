@@ -1,22 +1,2 @@
-# crafti-gaming
-Portal de noticias, lanzamientos y entretenimiento gamer.
-
-## Noticias y publicación
-
-`news.json` contiene las noticias propias revisadas. Cada una incluye el
-enlace directo a la fuente, la fecha y el texto original en español.
-Para añadir una nota, usa `tipo_contenido: "Noticia propia"` y completa
-`title`, `summary`, `contenido`, `published`, `category`, `source` y `url`.
-
-GitHub Actions construye el catálogo público a los minutos 7 y 37 de cada
-hora UTC y también admite una ejecución manual. Los enlaces RSS aparecen
-como titulares de la fuente. Las imágenes de los feeds se omiten. El
-catálogo usa ilustraciones de Crafti Gaming y las imágenes documentadas
-en `imagenes_autorizadas.json`, con sus créditos en el lector.
-
-Para generar un catálogo de prueba, ejecuta
-`python update_news.py --offline --output /tmp/crafti/news.json`.
-Para probar también los feeds, quita `--offline`. Abre el sitio a través
-de HTTP, por ejemplo con `python -m http.server 3000`.
-
-En GitHub, la fuente de publicación de Pages debe ser **GitHub Actions**.
+# Crafti Gaming 3.0
+Paquete autónomo para GitHub Pages. Conservar la estructura de carpetas y configurar Pages con GitHub Actions. El flujo revisa fuentes cada 30 minutos (GitHub puede retrasarlo). Las fichas RSS no son artículos revisados; las fuentes nuevas en inglés requieren traducción editorial. No hay generación automática de artículos extensos ni permisos fotográficos concedidos. El catálogo inicial procede de la versión anterior y no se ha vuelto a verificar en línea. Las portadas son ilustraciones propias, no fotografías oficiales. Prueba local: python update_news.py --offline. No sustituir un catálogo autorizado existente por el archivo vacío sin conservar una copia.

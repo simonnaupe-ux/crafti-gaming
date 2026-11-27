@@ -556,6 +556,8 @@ footer strong {
 @media(max-width:720px){.header-content nav{display:none}.menu-trigger{order:-1}}
 
 </style>
+<meta name="description" content="Crafti Gaming: noticias de videojuegos en español, lanzamientos, tecnología y The Game Awards.">
+<style>@media(max-width:600px){.slide-content h1{font-size:clamp(1.15rem,5vw,1.65rem);overflow-wrap:anywhere}.slide-content{max-width:100%}}</style>
 </head>
 
 <body>
@@ -601,7 +603,7 @@ footer strong {
  <div class="side-menu-head"><strong>🎮 CRAFTI <span style="color:#00eaff">GAMING</span></strong><button class="side-close" id="sideClose" aria-label="Cerrar menú">×</button></div>
  <div class="side-label">PORTAL</div>
  <button data-page="inicio">🏠 Portada</button><button data-page="noticias">📰 Últimas noticias</button><button data-page="lanzamientos">🚀 Lanzamientos</button><button data-page="tecnologia">💻 Tecnología y hardware</button><button data-page="ia">🤖 Inteligencia artificial</button><button data-page="goty">🏆 GOTY y premios</button>
- <div class="side-label">VIDEOJUEGOS Y PLATAFORMAS</div>
+ <button data-page="espacio">🚀 Ciencia y espacio</button><button data-page="expertos">🔎 Expertos y análisis</button><div class="side-label">VIDEOJUEGOS Y PLATAFORMAS</div>
  <button data-page="xbox">✖ Xbox</button><button data-page="playstation">🎮 PlayStation</button><button data-page="nintendo">🍄 Nintendo</button><button data-page="pc">🖥️ PC y Steam</button><button data-page="plataformas">🎯 Todas las plataformas</button>
  <div class="side-label">EXPLORAR</div>
  <button data-page="articulos">✍️ Análisis y artículos</button><button data-page="guias">📖 Guías y consejos</button><button data-page="esports">🏅 Esports</button><button data-page="videos">🔴 Videos y directos</button><button data-page="comunidad">💬 Comunidad</button><button data-page="nosotros">ℹ️ Nosotros</button>
@@ -737,6 +739,8 @@ footer strong {
 </section>
 
 
+<section id="espacio" class="page"><h2 class="section-title">🚀 Ciencia y <span>espacio</span></h2><div class="cards" id="spaceNews"></div></section>
+<section id="expertos" class="page"><h2 class="section-title">🔎 Expertos y <span>análisis</span></h2><div class="cards" id="expertNews"></div></section>
 <section id="ia" class="page"><h2 class="section-title">🤖 Inteligencia <span>artificial</span></h2><div class="cards" id="aiNews"></div></section>
 <section id="xbox" class="page"><h2 class="section-title">✖ Noticias de <span>Xbox</span></h2><div class="cards" id="xboxNews"></div></section>
 <section id="playstation" class="page"><h2 class="section-title">🎮 Noticias de <span>PlayStation</span></h2><div class="cards" id="psNews"></div></section>
@@ -960,7 +964,7 @@ function newsImage(n, className, alt) {
 }
 
 function readButton(n, cls) {
-  const b = make("button", cls, n.contenido ? "Leer artículo →" : "Ver ficha de noticia →");
+  const b = make("button", cls, n.tipo_contenido?.includes("Ficha automática") ? "Ver ficha de noticia →" : n.contenido ? "Leer artículo →" : "Ver ficha de noticia →");
   b.onclick = () => openArticle(n);
   return b;
 }
@@ -982,6 +986,9 @@ function openArticle(n) {
   const content = (n.contenido || n.descripcion || "").trim();
   if (content) content.split(/\n+/).filter(Boolean).forEach(p => root.append(make("p","",p)));
   else root.append(make("p","notice","La fuente no proporcionó una descripción detallada. Consulta la publicación original al final."));
+  if(n.fecha) root.append(make("p","notice","Publicación: " + n.fecha.slice(0,10)));
+  for(const e of n.expertos || []) { root.append(make("h2","","Perspectiva de " + e.nombre),make("p","",e.comentario),externalLink("Fuente de la declaración",e.url,"read-more")); }
+  for(const e of n.galeria || []) { const img=make("img","editorial-cover"); img.src=safeUrl(e.imagen); img.alt=e.descripcion || "Imagen del artículo"; img.loading="lazy"; root.append(img,make("p","notice",e.autor+" · "+e.licencia),externalLink("Créditos",e.fuente,"read-more")); }
   if (safeUrl(n.url)) root.append(externalLink("Consultar fuente original →",n.url,"action"));
   showPage("lector");
 }
@@ -1159,10 +1166,14 @@ searchInput.addEventListener("input", renderSearch);
 
 function renderNews() {
   renderCards("editorialNews", ownNews);
-  renderCards("homeEditorial", ownNews.slice(0,3));
-  renderCards("homeNews", [...news].sort((a,b) => Number(/goty|game awards|juego del año|premios|nominad/i.test([b.titulo,b.categoria].join(" "))) - Number(/goty|game awards|juego del año|premios|nominad/i.test([a.titulo,a.categoria].join(" ")))).slice(0, 9));
+  const isGoty = n => /\bgoty\b|game awards|juego del año|game of the year/i.test([n.titulo,n.categoria].join(" "));
+  const goty = news.filter(isGoty);
+  renderCards("homeEditorial", ownNews.filter(n => !isGoty(n)).slice(0,3));
+  renderCards("homeNews", [...goty.slice(0,1), ...news.filter(n => !isGoty(n))].slice(0,9));
   renderCards("allNews", news);
   const match = (n, pattern) => pattern.test(normalize([n.titulo,n.descripcion,n.categoria,n.fuente].join(" ")));
+  renderCards("spaceNews",news.filter(n=>match(n,/ciencia|espacio|spacex|starship|starlink|nasa|astronomia/)));
+  renderCards("expertNews",news.filter(n=>n.tipo_contenido === "Noticia propia" && n.expertos.length));
   renderCards("aiNews",news.filter(n=>match(n,/inteligencia artificial|\bia\b|\bai\b|chatgpt|gemini|openai|robot|machine learning/)));
   renderCards("xboxNews",news.filter(n=>match(n,/xbox|microsoft gaming|game pass/)));
   renderCards("psNews",news.filter(n=>match(n,/playstation|\bps5\b|sony interactive/)));
@@ -1182,7 +1193,7 @@ function renderNews() {
   ));
 
   const featured = news.filter(n => n.destacada || n.tipo_contenido === "Noticia propia");
-  slides = [...featured, ...news.filter(n => !featured.includes(n))].slice(0, 6);
+  slides = [...goty.slice(0,1), ...featured.filter(n => !isGoty(n)), ...news.filter(n => !isGoty(n) && !featured.includes(n))].slice(0,6);
 
   renderCarousel();
   restartTimer();
@@ -1205,6 +1216,9 @@ function parseNews(text) {
     seen.add(key);
     return [{
       titulo, url: sourceUrl || "", contenido,
+      fecha: clean(item.published || item.fecha),
+      expertos: Array.isArray(item.expertos) ? item.expertos.filter(e=>e && clean(e.nombre) && clean(e.comentario) && /^https:\/\//i.test(clean(e.url))) : [],
+      galeria: Array.isArray(item.galeria) ? item.galeria.filter(e=>e && clean(e.imagen) && clean(e.autor) && clean(e.licencia) && /^https:\/\//i.test(clean(e.fuente))) : [],
       categoria: clean(item.categoria || item.category || item.plataforma) || "Videojuegos",
       descripcion: clean(item.descripcion || item.summary || item.resumen),
       imagen: clean(item.imagen || item.image),
