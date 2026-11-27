@@ -166,7 +166,7 @@ def commons_image(subject):
             if not re.fullmatch(r"(?:CC BY(?:-SA)? [234]\.[05]|CC0|Public domain)",license,re.I) or not author: continue
             url=info.get("thumburl",info.get("url",""))
             if urlsplit(url).hostname != "upload.wikimedia.org" or info.get("mime") not in ("image/jpeg","image/png","image/webp"): continue
-            return dict(image=url, imagen_autor=author, imagen_licencia=license, imagen_fuente=info["descriptionurl"], imagen_tipo="Fotografía referencial de Wikimedia Commons")
+            return dict(image=url, imagen_autor=author, imagen_licencia=license + " · " + plain(meta.get("LicenseUrl",{}).get("value","")) + " · Recorte visual y degradado", imagen_fuente=info["descriptionurl"], imagen_tipo="Fotografía temática referencial de Wikimedia Commons: " + subject + " (no representa necesariamente el acontecimiento)")
     except (OSError, ValueError, KeyError, TypeError): pass
     return None
 
@@ -189,6 +189,14 @@ def with_image(article, bank):
     for entry in bank:
         if entry["categoria"] == category and all(entry.get(k) for k in ("autor","licencia","fuente","imagen")) and any(t.casefold() in title for t in entry["palabras_clave"]) and not any(t.casefold() in title for t in entry.get("excluir",[])):
             return dict(article,image=entry["imagen"],imagen_autor=entry["autor"],imagen_licencia=entry["licencia"],imagen_fuente=entry["fuente"],imagen_tipo=entry["tipo"])
+    if not OFFLINE:
+        subject = next((name for pattern, name in SUBJECTS if re.search(pattern, title, re.I)), None)
+        if not subject:
+            subject = {"Xbox":"Xbox Series X console", "PlayStation":"PlayStation 5 console", "Nintendo":"Nintendo Switch console", "PC Gaming":"Desktop gaming computer", "Tecnología":"Computer circuit board", "Inteligencia artificial":"Computer server racks", "Ciencia y espacio":"Earth from space NASA", "Videojuegos":"Video game controller", "Lanzamientos":"Video game controller", "GOTY":"The Game Awards stage"}.get(category)
+        if subject:
+            found = commons_image(subject)
+            if found:
+                return dict(article, **found)
     return original_cover(article)
 
 def build_catalog(reviewed, automatic, bank):
