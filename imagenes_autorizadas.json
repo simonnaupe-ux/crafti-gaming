@@ -21,6 +21,41 @@
       "licencia": "Dominio público",
       "fuente": "https://commons.wikimedia.org/wiki/File:Nintendo-Switch-wJoyCons-BlRd-Standing-FL.jpg",
       "tipo": "Fotografía referencial de Nintendo Switch"
+    },
+    {
+      "categoria": "Xbox",
+      "palabras_clave": [
+        "Xbox abre un fin de semana",
+        "SiegfriedX cruza"
+      ],
+      "imagen": "https://commons.wikimedia.org/wiki/Special:FilePath/Xbox%20Series%20X%20(July%208%2C%202026).jpg?width=960",
+      "autor": "茅野ふたば",
+      "licencia": "CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/ — recorte visual y degradado en carrusel",
+      "fuente": "https://commons.wikimedia.org/wiki/File:Xbox_Series_X_(July_8%2C_2026).jpg",
+      "tipo": "Fotografía referencial de Xbox Series X; no es una captura del videojuego"
+    },
+    {
+      "categoria": "PlayStation",
+      "palabras_clave": [
+        "Infinity Nikki estrena",
+        "El catálogo mensual de PlayStation Plus"
+      ],
+      "imagen": "https://commons.wikimedia.org/wiki/Special:FilePath/PlayStation%205.jpg?width=960",
+      "autor": "Rube451",
+      "licencia": "CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/ — recorte visual y degradado en carrusel",
+      "fuente": "https://commons.wikimedia.org/wiki/File:PlayStation_5.jpg",
+      "tipo": "Fotografía referencial de PlayStation 5; no es una captura del videojuego"
+    },
+    {
+      "categoria": "Lanzamientos",
+      "palabras_clave": [
+        "Hounded prepara su llegada a PS5"
+      ],
+      "imagen": "https://commons.wikimedia.org/wiki/Special:FilePath/PlayStation%205.jpg?width=960",
+      "autor": "Rube451",
+      "licencia": "CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/ — recorte visual y degradado en carrusel",
+      "fuente": "https://commons.wikimedia.org/wiki/File:PlayStation_5.jpg",
+      "tipo": "Fotografía referencial de PlayStation 5; no es una captura del videojuego"
     }
   ]
 }
