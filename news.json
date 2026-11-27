@@ -1,0 +1,47 @@
+{
+  "updated": "2026-11-27T07:00:00+00:00",
+  "articles": [
+    {
+      "id": "1c08046d8c81a0b5",
+      "category": "Xbox",
+      "source": "Xbox Wire",
+      "title": "Free Play Days: Warhammer 40,000: Mechanicus y Little Rocket Lab",
+      "url": "https://news.xbox.com/en-us/2026/11/26/free-play-days-11-26-2026/",
+      "summary": "Xbox Wire anuncia dos títulos disponibles durante el fin de semana del 26 al 29 de noviembre para miembros elegibles de Game Pass.",
+      "image": "",
+      "published": "2026-11-26"
+    },
+    {
+      "id": "8eb016225867552f",
+      "category": "Xbox",
+      "source": "Xbox Wire",
+      "title": "Un jugador alcanza los 10 millones de Gamerscore",
+      "url": "https://news.xbox.com/en-us/2026/11/25/achievements-10-million-gamerscore-interview/",
+      "summary": "Xbox Wire entrevista al primer jugador que alcanzó el hito de 10 millones de Gamerscore.",
+      "image": "",
+      "published": "2026-11-25"
+    },
+    {
+      "id": "31c57cd777dfec60",
+      "category": "PlayStation",
+      "source": "PlayStation Blog",
+      "title": "Juegos mensuales de PlayStation Plus para diciembre",
+      "url": "https://blog.playstation.com/",
+      "summary": "PlayStation presenta Tony Hawk’s Pro Skater 3+4, Dragon Ball Xenoverse 2 y Amnesia: The Bunker para diciembre.",
+      "image": "",
+      "published": "2026-11-25"
+    },
+    {
+      "id": "31c57cd777dfec60",
+      "category": "PlayStation",
+      "source": "PlayStation Blog",
+      "title": "PlayStation agradece a la comunidad por el lanzamiento de Grand Theft Auto VI",
+      "url": "https://blog.playstation.com/",
+      "summary": "El blog oficial publicó una nota sobre el lanzamiento de Grand Theft Auto VI.",
+      "image": "",
+      "published": "2026-11-23"
+    }
+  ],
+  "feed_errors": [],
+  "note": "Noticias verificadas manualmente como muestra inicial; la actualización automática sustituye y amplía este catálogo."
+}
