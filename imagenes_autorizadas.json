@@ -1,1 +1,15 @@
-{"imagenes": []}
+{
+  "imagenes": [
+    {
+      "categoria": "Ciencia y espacio",
+      "palabras_clave": [
+        "Artemis II: qué aporta el vuelo lunar"
+      ],
+      "imagen": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Artemis_II_Crew_on_flight_day_4.webp",
+      "autor": "NASA",
+      "licencia": "Dominio público (EE. UU.)",
+      "fuente": "https://commons.wikimedia.org/wiki/File:Artemis_II_Crew_on_flight_day_4.webp",
+      "tipo": "Imagen oficial de la tripulación durante el cuarto día de vuelo"
+    }
+  ]
+}
