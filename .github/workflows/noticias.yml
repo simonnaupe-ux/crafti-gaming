@@ -24,15 +24,15 @@ jobs:
 
     steps:
       - name: Obtener archivos
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Configurar Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
       - name: Configurar GitHub Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Preparar archivos publicos
         run: |
@@ -53,7 +53,7 @@ jobs:
           ls -lah _site
 
       - name: Subir paquete de publicacion
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           name: github-pages
           path: '_site'
@@ -70,6 +70,6 @@ jobs:
     steps:
       - name: Publicar Crafti Gaming
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
         with:
           artifact_name: github-pages
