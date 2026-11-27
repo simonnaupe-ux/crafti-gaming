@@ -121,7 +121,7 @@ def fetch_feed(default, source, url):
     articles = []
     for item in items[:25]:
         title = " ".join(html.unescape(item.findtext("title", "")).split())
-        if not title or re.search(r"patrocinado|publirreportaje|black friday|cyber monday", title, re.I):
+        if not title or re.search(r"patrocinado|publirreportaje|black friday|cyber monday|sorteamos|sorteo", title, re.I):
             continue
         try:
             date = publication(item.findtext("pubDate", ""))
@@ -180,7 +180,7 @@ def original_cover(article):
     lines=textwrap.wrap(title, width=35)[:4]
     if len(textwrap.wrap(title,width=35))>4: lines[-1]=lines[-1].rstrip()+"…"
     words="".join(f'<text x="65" y="{220+i*65}" font-size="48" font-weight="bold">{html.escape(line)}</text>' for i,line in enumerate(lines))
-    svg=f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675"><defs><linearGradient id="g"><stop stop-color="#090e22"/><stop offset="1" stop-color="hsl({hue},65%,30%)"/></linearGradient></defs><rect width="1200" height="675" fill="url(#g)"/><g fill="none" stroke="hsl({hue},90%,70%)" opacity=".65" stroke-width="5"><circle cx="1020" cy="240" r="170"/><circle cx="1020" cy="240" r="120"/><path d="M850 540L1130 260M870 600L1170 300M50 110H1150M50 575H1150"/></g><g fill="white" font-family="sans-serif"><text x="65" y="85" font-size="26">CRAFTI GAMING / {html.escape(article['category'].upper())}</text>{words}<text x="65" y="625" font-size="22">PORTADA EDITORIAL · NO ES UNA CAPTURA DEL JUEGO</text></g></svg>'''
+    svg=f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675"><defs><linearGradient id="g"><stop stop-color="#090e22"/><stop offset="1" stop-color="hsl({hue},65%,30%)"/></linearGradient></defs><rect width="1200" height="675" fill="url(#g)"/><g fill="none" stroke="hsl({hue},90%,70%)" opacity=".65" stroke-width="5"><circle cx="1020" cy="240" r="170"/><circle cx="1020" cy="240" r="120"/><path d="M850 540L1130 260M870 600L1170 300M50 110H1150M50 575H1150"/></g><g fill="white" font-family="sans-serif"><path d="M420 310 Q400 250 470 240 H730 Q800 250 780 310 L820 440 Q830 500 770 480 L680 405 H520 L430 480 Q370 500 380 440 Z" fill="#161d38" stroke="#65eaff" stroke-width="8"/><path d="M460 330 H540 M500 290 V370" stroke="#65eaff" stroke-width="15" stroke-linecap="round"/><circle cx="710" cy="315" r="13" fill="#ff65d8"/><circle cx="750" cy="350" r="13" fill="#65eaff"/></g></svg>'''
     path=f"portadas/noticia-{key}.svg"; target=OUTPUT_DIR/path; target.parent.mkdir(parents=True,exist_ok=True); target.write_text(svg,encoding="utf-8")
     return dict(article,image=path,imagen_autor="Crafti Gaming",imagen_tipo="Portada editorial original",imagen_licencia="",imagen_fuente="")
 
