@@ -949,12 +949,12 @@ function openArticle(n) {
   root.append(back, make("p", "tag", n.categoria), make("h1", "", n.titulo), make("p", "notice", n.fuente || "Crafti Gaming"));
   if (safeUrl(n.imagen)) {
     const img = make("img", "editorial-cover"); img.src = safeUrl(n.imagen); img.alt = "Ilustración del tema"; img.onerror = () => img.remove(); root.append(img);
-    root.append(make("p", "notice", [n.imagen_tipo,n.imagen_autor,n.imagen_licencia].filter(Boolean).join(" · ")));
+    if ([n.imagen_tipo,n.imagen_autor,n.imagen_licencia].filter(Boolean).length) root.append(make("p", "notice", [n.imagen_tipo,n.imagen_autor,n.imagen_licencia].filter(Boolean).join(" · ")));
     if (safeUrl(n.imagen_fuente)) root.append(externalLink("Créditos de imagen",n.imagen_fuente,"read-more"));
   }
-  const content = typeof n.contenido === "string" ? n.contenido.trim() : "";
+  const content = typeof n.contenido === "string" ? n.contenido.trim() : (n.descripcion || "").trim();
   if (content) content.split(/\n+/).filter(Boolean).forEach(p => root.append(make("p","",p)));
-  else root.append(make("p","",n.descripcion || "Consulta la fuente original."),make("p","notice","Esta noticia aún no tiene un resumen editorial propio."));
+  else root.append(make("p","notice","La fuente no proporcionó una descripción detallada. Consulta la publicación original al final."));
   if (safeUrl(n.url)) root.append(externalLink("Consultar fuente original →",n.url,"action"));
   showPage("lector");
 }
@@ -965,7 +965,7 @@ function renderCards(id, items) {
 
   if (!items.length) {
     root.append(make("p", "notice",
-      "No hay resultados disponibles en esta sección."));
+      "Todavía no hay noticias verificadas en esta sección. Se añadirán cuando las fuentes publiquen novedades."));
     return;
   }
 
@@ -979,11 +979,12 @@ function renderCards(id, items) {
       img.alt = n.titulo;
       img.loading = "lazy";
       img.onerror = () => {
-        image.textContent = n.icono || "🎮";
+        image.replaceChildren();
+        const cover = make("img"); cover.src = "portadas/categoria-" + (/goty|premios/i.test(n.categoria)?6:/xbox/i.test(n.categoria)?2:/playstation/i.test(n.categoria)?3:/nintendo/i.test(n.categoria)?4:/tecnolog|pc|hardware/i.test(n.categoria)?5:0) + ".svg"; cover.alt = "Ilustración temática de " + n.categoria; image.append(cover);
       };
       image.append(img);
     } else {
-      image.textContent = n.icono || "🎮";
+      const cover = make("img"); cover.src = "portadas/categoria-" + (/goty|premios/i.test(n.categoria)?6:/xbox/i.test(n.categoria)?2:/playstation/i.test(n.categoria)?3:/nintendo/i.test(n.categoria)?4:/tecnolog|pc|hardware/i.test(n.categoria)?5:0) + ".svg"; cover.alt = "Ilustración temática de " + n.categoria; image.append(cover);
     }
 
     const body = make("div", "card-body");
@@ -1030,6 +1031,7 @@ function renderCarousel() {
       slide.append(art);
     }
 
+    if (!n.imagen) { const art=make("img","slide-art"); art.src="portadas/categoria-" + (/goty|premios/i.test(n.categoria)?6:0) + ".svg"; art.alt=""; slide.append(art); slide.classList.add("has-image"); }
     const content = make("div", "slide-content");
 
     content.append(
@@ -1149,7 +1151,7 @@ document.getElementById("search").addEventListener("input", e => {
 function renderNews() {
   renderCards("editorialNews", ownNews);
   renderCards("homeEditorial", ownNews.slice(0,3));
-  renderCards("homeNews", news.slice(0, 6));
+  renderCards("homeNews", [...news].sort((a,b) => Number(/goty|game awards|juego del año|premios|nominad/i.test([b.titulo,b.categoria].join(" "))) - Number(/goty|game awards|juego del año|premios|nominad/i.test([a.titulo,a.categoria].join(" ")))).slice(0, 9));
   renderCards("allNews", news);
   const match = (n, pattern) => pattern.test(normalize([n.titulo,n.descripcion,n.categoria,n.fuente].join(" ")));
   renderCards("aiNews",news.filter(n=>match(n,/inteligencia artificial|\bia\b|\bai\b|chatgpt|gemini|openai|robot|machine learning/)));
@@ -1170,8 +1172,8 @@ function renderNews() {
     normalize(n.categoria).includes("lanzamiento")
   ));
 
-  const featured = news.filter(n => n.destacada === true);
-  slides = (featured.length ? featured : news).slice(0, 6);
+  const featured = news.filter(n => /goty|game awards|juego del año|premios|nominad/i.test([n.titulo,n.descripcion,n.categoria].join(" ")));
+  slides = [...featured, ...news.filter(n => !featured.includes(n))].slice(0, 6);
 
   renderCarousel();
   restartTimer();
@@ -1204,8 +1206,8 @@ async function loadNews() {
 
     if (!valid.length) throw new Error("Sin noticias");
 
-    ownNews = [...editorial, ...valid.filter(n => n.contenido && !editorial.some(e => e.titulo === n.titulo))];
-    news = valid.filter(n => !n.contenido);
+    ownNews = [...editorial, ...valid.filter(n => n.tipo_contenido === "Editorial" && n.contenido && !editorial.some(e => e.titulo === n.titulo))];
+    news = valid.filter(n => n.tipo_contenido !== "Editorial");
     if (!news.length) news = [...fallback];
     renderNews();
 
