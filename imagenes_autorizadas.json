@@ -56,6 +56,28 @@
       "licencia": "CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/ — recorte visual y degradado en carrusel",
       "fuente": "https://commons.wikimedia.org/wiki/File:PlayStation_5.jpg",
       "tipo": "Fotografía referencial de PlayStation 5; no es una captura del videojuego"
+    },
+    {
+      "categoria": "PC Gaming",
+      "palabras_clave": [
+        "Steam prueba iconos"
+      ],
+      "imagen": "https://commons.wikimedia.org/wiki/Special:FilePath/Steam-controllers.jpg?width=960",
+      "autor": "PacoCity3124",
+      "licencia": "CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/ — recorte visual y degradado",
+      "fuente": "https://commons.wikimedia.org/wiki/File:Steam-controllers.jpg",
+      "tipo": "Fotografía referencial de mandos Steam; no muestra los nuevos iconos"
+    },
+    {
+      "categoria": "GOTY",
+      "palabras_clave": [
+        "The Game Awards abre"
+      ],
+      "imagen": "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Game%20Awards%202022%20audience.png?width=960",
+      "autor": "Zion Grassl",
+      "licencia": "CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/ — recorte visual y degradado",
+      "fuente": "https://commons.wikimedia.org/wiki/File:The_Game_Awards_2022_audience.png",
+      "tipo": "Fotografía de archivo del público de The Game Awards 2022; no corresponde a 2026"
     }
   ]
 }
