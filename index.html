@@ -935,6 +935,30 @@ function renderPlatforms(id) {
   });
 }
 
+const coverByCategory = {
+  noticias: 2, xbox: 3, playstation: 3, nintendo: 3,
+  "pc gaming": 5, pc: 5, tecnologia: 5, "inteligencia artificial": 4,
+  lanzamientos: 6, goty: 1, premios: 7
+};
+
+function coverPath(n) {
+  return `portadas/categoria-${coverByCategory[normalize(n.categoria)] ?? 0}.svg`;
+}
+
+function newsImage(n, className, alt) {
+  const img = make("img", className);
+  const fallbackUrl = safeUrl(coverPath(n));
+  img.alt = alt;
+  img.src = safeUrl(n.imagen) || fallbackUrl;
+  img.addEventListener("error", () => {
+    img.src = fallbackUrl;
+    if (img.nextElementSibling?.classList.contains("image-credit")) {
+      img.nextElementSibling.textContent = "Ilustración temática · Crafti Gaming";
+    }
+  }, {once: true});
+  return img;
+}
+
 function readButton(n, cls) {
   const b = make("button", cls, n.contenido ? "Leer artículo →" : "Ver ficha de noticia →");
   b.onclick = () => openArticle(n);
@@ -946,13 +970,16 @@ function openArticle(n) {
   root.replaceChildren();
   const back = make("button", "read-more", "← Volver");
   back.onclick = () => showPage(previous === "lector" ? "inicio" : previous);
-  root.append(back, make("p", "tag", n.categoria), make("h1", "", n.titulo), make("p", "notice", n.fuente || "Crafti Gaming"));
-  if (safeUrl(n.imagen)) {
-    const img = make("img", "editorial-cover"); img.src = safeUrl(n.imagen); img.alt = "Ilustración del tema"; img.onerror = () => img.remove(); root.append(img);
-    if ([n.imagen_tipo,n.imagen_autor,n.imagen_licencia].filter(Boolean).length) root.append(make("p", "notice", [n.imagen_tipo,n.imagen_autor,n.imagen_licencia].filter(Boolean).join(" · ")));
-    if (safeUrl(n.imagen_fuente)) root.append(externalLink("Créditos de imagen",n.imagen_fuente,"read-more"));
+  root.append(back, make("p", "tag", n.categoria), make("h1", "", n.titulo), make("p", "notice", [n.tipo_contenido, n.fuente].filter(Boolean).join(" · ") || "Crafti Gaming"));
+  root.append(newsImage(n, "editorial-cover", "Ilustración de " + n.categoria));
+  const credits = make("p", "notice image-credit",
+    [n.imagen_tipo, n.imagen_autor, n.imagen_licencia].filter(Boolean).join(" · ")
+      || "Ilustración temática · Crafti Gaming");
+  root.append(credits);
+  if (safeUrl(n.imagen_fuente)) {
+    credits.append(" · ", externalLink("Créditos de imagen", n.imagen_fuente, "read-more"));
   }
-  const content = typeof n.contenido === "string" ? n.contenido.trim() : (n.descripcion || "").trim();
+  const content = (n.contenido || n.descripcion || "").trim();
   if (content) content.split(/\n+/).filter(Boolean).forEach(p => root.append(make("p","",p)));
   else root.append(make("p","notice","La fuente no proporcionó una descripción detallada. Consulta la publicación original al final."));
   if (safeUrl(n.url)) root.append(externalLink("Consultar fuente original →",n.url,"action"));
@@ -973,24 +1000,14 @@ function renderCards(id, items) {
     const card = make("article", "card");
     const image = make("div", "card-image");
 
-    if (n.imagen && safeUrl(n.imagen)) {
-      const img = make("img");
-      img.src = safeUrl(n.imagen);
-      img.alt = n.titulo;
-      img.loading = "lazy";
-      img.onerror = () => {
-        image.replaceChildren();
-        const cover = make("img"); cover.src = "portadas/categoria-" + (/goty|premios/i.test(n.categoria)?6:/xbox/i.test(n.categoria)?2:/playstation/i.test(n.categoria)?3:/nintendo/i.test(n.categoria)?4:/tecnolog|pc|hardware/i.test(n.categoria)?5:0) + ".svg"; cover.alt = "Ilustración temática de " + n.categoria; image.append(cover);
-      };
-      image.append(img);
-    } else {
-      const cover = make("img"); cover.src = "portadas/categoria-" + (/goty|premios/i.test(n.categoria)?6:/xbox/i.test(n.categoria)?2:/playstation/i.test(n.categoria)?3:/nintendo/i.test(n.categoria)?4:/tecnolog|pc|hardware/i.test(n.categoria)?5:0) + ".svg"; cover.alt = "Ilustración temática de " + n.categoria; image.append(cover);
-    }
+    const img = newsImage(n, "", "Ilustración de " + n.categoria);
+    img.loading = "lazy";
+    image.append(img);
 
     const body = make("div", "card-body");
 
     body.append(
-      make("span", "tag", n.categoria),
+      make("span", "tag", [n.categoria, n.tipo_contenido].filter(Boolean).join(" · ")),
       make("h3", "", n.titulo),
       make("p", "", n.descripcion || ""),
       readButton(n, "read-more")
@@ -1019,23 +1036,12 @@ function renderCarousel() {
     slide.style.background =
       `radial-gradient(circle at 85% 20%, ${color}, transparent 65%), #10172d`;
 
-    if (n.imagen && safeUrl(n.imagen)) {
-      const art = make("img", "slide-art");
-      art.alt = "";
-      art.src = safeUrl(n.imagen);
-      slide.classList.add("has-image");
-      art.onerror = () => {
-        art.remove();
-        slide.classList.remove("has-image");
-      };
-      slide.append(art);
-    }
-
-    if (!n.imagen) { const art=make("img","slide-art"); art.src="portadas/categoria-" + (/goty|premios/i.test(n.categoria)?6:0) + ".svg"; art.alt=""; slide.append(art); slide.classList.add("has-image"); }
+    slide.classList.add("has-image");
+    slide.append(newsImage(n, "slide-art", ""));
     const content = make("div", "slide-content");
 
     content.append(
-      make("span", "tag", "⚡ " + n.categoria.toUpperCase()),
+      make("span", "tag", "⚡ " + [n.categoria, n.tipo_contenido].filter(Boolean).join(" · ")),
       make("h1", "", n.titulo),
       make("p", "", n.descripcion || ""),
       readButton(n, "action")
@@ -1130,9 +1136,10 @@ function normalize(text) {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
-document.getElementById("search").addEventListener("input", e => {
-  const query = normalize(e.target.value.trim());
+const searchInput = document.getElementById("search");
 
+function renderSearch() {
+  const query = normalize(searchInput.value.trim());
   if (!query) {
     showPage("inicio");
     return;
@@ -1146,7 +1153,9 @@ document.getElementById("search").addEventListener("input", e => {
 
   renderCards("searchResults", results);
   showPage("resultados");
-});
+}
+
+searchInput.addEventListener("input", renderSearch);
 
 function renderNews() {
   renderCards("editorialNews", ownNews);
@@ -1159,7 +1168,7 @@ function renderNews() {
   renderCards("psNews",news.filter(n=>match(n,/playstation|\bps5\b|sony interactive/)));
   renderCards("nintendoNews",news.filter(n=>match(n,/nintendo|switch|pokemon|zelda/)));
   renderCards("pcNews",news.filter(n=>match(n,/steam|\bpc\b|hardware|gpu|nvidia|amd|intel/)));
-  renderCards("guideNews",news.filter(n=>match(n,/guia|consejo|tutorial|como jugar|trucos/)));
+  renderCards("guideNews",[...ownNews, ...news].filter(n=>match(n,/guia|consejo|tutorial|como |primeros pasos|trucos/)));
   renderCards("esportsNews",news.filter(n=>match(n,/esport|torneo|competitivo|campeonato/)));
   renderCards("gotyNews", news.filter(n => /goty|game awards|juego del año|premios|nominad/i.test([n.titulo,n.descripcion,n.categoria].join(" "))));
 
@@ -1172,52 +1181,77 @@ function renderNews() {
     normalize(n.categoria).includes("lanzamiento")
   ));
 
-  const featured = news.filter(n => /goty|game awards|juego del año|premios|nominad/i.test([n.titulo,n.descripcion,n.categoria].join(" ")));
+  const featured = news.filter(n => n.destacada || n.tipo_contenido === "Noticia propia");
   slides = [...featured, ...news.filter(n => !featured.includes(n))].slice(0, 6);
 
   renderCarousel();
   restartTimer();
 }
 
+function parseNews(text) {
+  const data = JSON.parse(text.replace(/^\uFEFF/, ""));
+  const feed = [data?.articles, data?.noticias, data?.articulos].find(Array.isArray);
+  if (!feed) throw new Error("Formato de noticias incorrecto");
+
+  const clean = value => typeof value === "string" ? value.trim() : "";
+  const seen = new Set();
+  return feed.flatMap(item => {
+    const titulo = clean(item?.titulo) || clean(item?.title);
+    const url = clean(item?.url);
+    const contenido = clean(item?.contenido);
+    const sourceUrl = /^https?:\/\//i.test(url) && safeUrl(url);
+    const key = sourceUrl || normalize(titulo);
+    if (!titulo || (!sourceUrl && !contenido) || seen.has(key)) return [];
+    seen.add(key);
+    return [{
+      titulo, url: sourceUrl || "", contenido,
+      categoria: clean(item.categoria || item.category || item.plataforma) || "Videojuegos",
+      descripcion: clean(item.descripcion || item.summary || item.resumen),
+      imagen: clean(item.imagen || item.image),
+      fuente: clean(item.fuente || item.source),
+      tipo_contenido: clean(item.tipo_contenido),
+      imagen_autor: clean(item.imagen_autor),
+      imagen_tipo: clean(item.imagen_tipo),
+      imagen_licencia: clean(item.imagen_licencia),
+      imagen_fuente: clean(item.imagen_fuente),
+      color: clean(item.color),
+      icono: clean(item.icono),
+      destacada: item.destacada === true
+    }];
+  });
+}
+
+let hasNews = false;
+let lastFeed = "";
 async function loadNews() {
-  try {
-    let response = await fetch("news.json?v=" + Date.now(), {cache:"no-store"});
-    if (!response.ok) response = await fetch("news.json?v=" + Date.now(), {cache:"no-store"});
-    if (!response.ok) throw new Error("Sin archivo de noticias");
-
-    const data = await response.json();
-
-    const feed = Array.isArray(data.noticias) ? data.noticias : (Array.isArray(data.articulos) ? data.articulos : null);
-    if (!feed) {
-      throw new Error("Formato incorrecto");
+  const status = document.getElementById("status");
+  for (const file of ["news.json", "noticias.json"]) {
+    try {
+      const response = await fetch(file, {cache: "no-cache"});
+      if (!response.ok) continue;
+      const text = await response.text();
+      if (hasNews && text === lastFeed) {
+        status.textContent = "Noticias cargadas desde nuestras fuentes.";
+        return;
+      }
+      const valid = parseNews(text);
+      if (!valid.length) continue;
+      ownNews = [...editorial, ...valid.filter(n => n.tipo_contenido === "Editorial"
+        && n.contenido && !editorial.some(e => e.titulo === n.titulo))];
+      news = valid.filter(n => n.tipo_contenido !== "Editorial");
+      hasNews = true;
+      lastFeed = text;
+      renderNews();
+      if (document.getElementById("resultados").classList.contains("active")) renderSearch();
+      status.textContent = "Noticias cargadas desde nuestras fuentes.";
+      return;
+    } catch (error) {
+      console.warn("Error al cargar " + file, error);
     }
-
-    const valid = feed
-      .filter(n => n && typeof n.titulo === "string"
-        && (safeUrl(n.url) || (typeof n.contenido === "string" && n.contenido.trim())))
-      .map(n => ({
-        ...n,
-        categoria: String(n.categoria || n.plataforma || "Videojuegos"),
-        descripcion: String(n.descripcion || n.summary || n.resumen || ""),
-        titulo: String(n.titulo || n.title || ""),
-        imagen: n.imagen || n.image || "",
-        fuente: n.fuente || n.source || ""
-      }));
-
-    if (!valid.length) throw new Error("Sin noticias");
-
-    ownNews = [...editorial, ...valid.filter(n => n.tipo_contenido === "Editorial" && n.contenido && !editorial.some(e => e.titulo === n.titulo))];
-    news = valid.filter(n => n.tipo_contenido !== "Editorial");
-    if (!news.length) news = [...fallback];
-    renderNews();
-
-    document.getElementById("status").textContent =
-      "Noticias cargadas desde nuestras fuentes.";
-
-  } catch {
-    document.getElementById("status").textContent =
-      "Por ahora puedes explorar nuestras fuentes oficiales. Las noticias automáticas están pendientes de configurar.";
   }
+  status.textContent = hasNews
+    ? "Mostramos la última edición disponible."
+    : "Las noticias no están disponibles ahora. Puedes explorar nuestras fuentes.";
 }
 
 const menuTrigger=document.getElementById("menuTrigger"), sideMenu=document.getElementById("sideMenu"), sideOverlay=document.getElementById("sideOverlay");
@@ -1225,13 +1259,13 @@ function toggleSide(open){sideMenu.classList.toggle("open",open);sideOverlay.cla
 menuTrigger.addEventListener("click",()=>toggleSide(true));
 document.getElementById("sideClose").addEventListener("click",()=>toggleSide(false));
 sideOverlay.addEventListener("click",()=>toggleSide(false));
-sideMenu.querySelectorAll("button[data-page]").forEach(b=>b.addEventListener("click",()=>{showPage(b.dataset.page);toggleSide(false)}));
+sideMenu.querySelectorAll("button[data-page]").forEach(b=>b.addEventListener("click",()=>{searchInput.value="";showPage(b.dataset.page);toggleSide(false)}));
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&sideMenu.classList.contains("open"))toggleSide(false)});
 
 document.getElementById("year").textContent =
   new Date().getFullYear();
 
-for (const [id,num] of Object.entries({noticias:7,articulos:0,lanzamientos:6,tecnologia:5,plataformas:2,videos:0,goty:6,comunidad:0,nosotros:7,ia:5,xbox:2,playstation:2,nintendo:2,pc:5,guias:6,esports:0})) {
+for (const [id,num] of Object.entries({noticias:2,articulos:0,lanzamientos:6,tecnologia:5,plataformas:3,videos:0,goty:1,comunidad:0,nosotros:0,ia:4,xbox:3,playstation:3,nintendo:3,pc:5,guias:0,esports:0})) {
   const section = document.getElementById(id);
   const art = make("div","section-art");
   const img = make("img"); img.src = `portadas/categoria-${num}.svg`; img.alt = "Ilustración temática"; img.onerror = () => {art.textContent = "CRAFTI GAMING";}; art.append(img);

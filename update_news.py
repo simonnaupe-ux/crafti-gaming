@@ -1,51 +1,175 @@
-import json, re, urllib.request, xml.etree.ElementTree as ET, html, datetime, pathlib, hashlib
-ROOT=pathlib.Path(__file__).resolve().parents[1]
-FEEDS=[('Xbox','Xbox Wire','https://news.xbox.com/en-us/feed/'),('PlayStation','PlayStation Blog','https://blog.playstation.com/feed/'),('Nintendo','Nintendo Life','https://www.nintendolife.com/feeds/latest'),('PC','PC Gamer','https://www.pcgamer.com/feeds.xml'),('Noticias','IGN','https://www.ign.com/rss/v2/articles/feed'),('Noticias','GameSpot','https://www.gamespot.com/feeds/mashup/')]
-ns={'media':'http://search.yahoo.com/mrss/','content':'http://purl.org/rss/1.0/modules/content/','atom':'http://www.w3.org/2005/Atom'}
-def clean(t):return re.sub(r'\s+',' ',html.unescape(re.sub('<[^>]+>',' ',t or ''))).strip()
-def pic(item):
- for el in item.iter():
-  tag=el.tag.split('}')[-1].lower()
-  if tag in ('thumbnail','content') and el.tag.startswith('{http://search.yahoo.com/mrss/'):
-   u=el.get('url','')
-   if u.startswith('https://'):return u
-  if tag=='enclosure' and el.get('type','').startswith('image/') and el.get('url','').startswith('https://'):return el.get('url')
- for name in ('description','{http://purl.org/rss/1.0/modules/content/}encoded'):
-  raw=item.findtext(name,'')
-  m=re.search(r'<img[^>]+src=["\'](https://[^"\']+)',raw)
-  if m:return html.unescape(m.group(1))
- return ''
-def fetch(category,source,url):
- req=urllib.request.Request(url,headers={'User-Agent':'CraftiGamingNewsBot/1.0 (+public RSS aggregator)'})
- with urllib.request.urlopen(req,timeout=18) as response: raw=response.read(2_000_000)
- doc=ET.fromstring(raw); items=doc.findall('.//item')
- if not items:
-  items=doc.findall('.//{http://www.w3.org/2005/Atom}entry')
- out=[]
- for item in items[:20]:
-  title=clean(item.findtext('title') or item.findtext('{http://www.w3.org/2005/Atom}title'))
-  link=item.findtext('link','')
-  if not link:
-   l=item.find('{http://www.w3.org/2005/Atom}link');link=l.get('href','') if l is not None else ''
-  if not title or not link.startswith('https://'):continue
-  desc=clean(item.findtext('description') or item.findtext('summary') or item.findtext('{http://www.w3.org/2005/Atom}summary'))[:220]
-  pub=clean(item.findtext('pubDate') or item.findtext('{http://www.w3.org/2005/Atom}updated'))
-  out.append({'id':hashlib.sha256(link.encode()).hexdigest()[:16],'title':title,'url':link,'summary':desc,'image':pic(item),'source':source,'category':category,'published':pub})
- return out
-news=[]; errors=[]
-for category,source,url in FEEDS:
- try: news+=fetch(category,source,url);print(source,'OK')
- except Exception as exc: errors.append(f'{source}: {exc}');print(source,'ERROR',exc)
-oldpath=ROOT/'news.json'
-if oldpath.exists():
- try:
-  old=json.loads(oldpath.read_text(encoding='utf8'))
-  existing={x['id'] for x in news}
-  news += [x for x in old.get('articles',[]) if x.get('id') not in existing][:40]
- except Exception:pass
-seen=set();unique=[]
-for a in news:
- if a['id'] not in seen:seen.add(a['id']);unique.append(a)
-if not unique:raise SystemExit('No news retrieved and no cached news available; preserving previous data')
-(ROOT/'news.json').write_text(json.dumps({'updated':datetime.datetime.now(datetime.timezone.utc).isoformat(),'articles':unique[:150],'feed_errors':errors},ensure_ascii=False,indent=2),encoding='utf8')
-print('Saved',len(unique),'articles')
+"""Build the public news catalog from reviewed articles and Spanish RSS links."""
+import argparse
+import gzip
+import hashlib
+import html
+import io
+import json
+import re
+import tempfile
+import xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
+from pathlib import Path
+from urllib.parse import urlsplit, urlunsplit
+from urllib.request import Request, urlopen
+
+ROOT = Path(__file__).resolve().parent
+MAX_FEED_BYTES = 4_000_000
+FEEDS = (
+    ("Xbox", "Xbox Wire", "https://news.xbox.com/es-latam/feed/"),
+    ("PlayStation", "PlayStation Blog", "https://blog.es.playstation.com/feed/"),
+    ("Videojuegos", "3DJuegos", "https://www.3djuegos.com/index.xml"),
+    ("Videojuegos", "Vandal", "https://vandal.elespanol.com/xml.cgi"),
+    ("Tecnología", "Xataka", "https://www.xataka.com/index.xml"),
+)
+COVER = {
+    "Xbox": 3, "PlayStation": 3, "Nintendo": 3, "PC Gaming": 5,
+    "GOTY": 1, "Lanzamientos": 6, "Tecnología": 5,
+    "Inteligencia artificial": 4, "Videojuegos": 0,
+}
+TOPICS = (
+    ("GOTY", r"\bgoty\b|the game awards|juego del año"),
+    ("Inteligencia artificial", r"inteligencia artificial|\bia\b|chatgpt|openai"),
+    ("Nintendo", r"nintendo|pokémon|zelda|\bswitch\b"),
+    ("PlayStation", r"playstation|\bps[45]\b"),
+    ("Xbox", r"xbox|game pass"),
+    ("PC Gaming", r"steam|\bgpu\b|nvidia|radeon|\bpc\b"),
+    ("Lanzamientos", r"lanzamiento|fecha de estreno"),
+)
+
+
+def canonical_url(url):
+    parts = urlsplit(url.strip())
+    if parts.scheme != "https" or not parts.hostname or parts.username or parts.password:
+        return ""
+    return urlunsplit(("https", parts.netloc.lower(), parts.path.rstrip("/") or "/",
+                       parts.query, ""))
+
+
+def publication(value):
+    try:
+        date = datetime.fromisoformat(value)
+    except ValueError:
+        date = parsedate_to_datetime(value)
+    return date.replace(tzinfo=date.tzinfo or timezone.utc).astimezone(timezone.utc)
+
+
+def classify(title, default):
+    if default in ("PlayStation", "Xbox"):
+        return default
+    return next((category for category, pattern in TOPICS
+                 if re.search(pattern, title, re.IGNORECASE)), default)
+
+
+def fetch_feed(default, source, url):
+    request = Request(url, headers={"User-Agent": "CraftiGaming/1.0"})
+    with urlopen(request, timeout=15) as response:
+        raw = response.read(MAX_FEED_BYTES + 1)
+    if raw.startswith(b"\x1f\x8b"):
+        with gzip.GzipFile(fileobj=io.BytesIO(raw)) as stream:
+            raw = stream.read(MAX_FEED_BYTES + 1)
+    if len(raw) > MAX_FEED_BYTES:
+        raise ValueError("El feed excede el tamaño permitido")
+    items = ET.fromstring(raw).findall("./channel/item")
+    now = datetime.now(timezone.utc)
+    articles = []
+    for item in items[:25]:
+        title = " ".join(html.unescape(item.findtext("title", "")).split())
+        if not title or re.search(r"patrocinado|publirreportaje|black friday|cyber monday", title, re.I):
+            continue
+        try:
+            date = publication(item.findtext("pubDate", ""))
+            link = canonical_url(item.findtext("link", ""))
+        except (ValueError, TypeError, OverflowError):
+            continue
+        if not link or date > now:
+            continue
+        articles.append({
+            "title": title, "url": link, "source": source,
+            "category": classify(title, default), "published": date.isoformat(),
+            "summary": f"Consulta la publicación de {source} para conocer los detalles.",
+            "tipo_contenido": "Titular de la fuente",
+        })
+    if not articles:
+        raise ValueError("Sin entradas RSS válidas")
+    return articles
+
+
+def collect_feed(feed):
+    try:
+        return fetch_feed(*feed)
+    except (OSError, ValueError, ET.ParseError, EOFError) as error:
+        print(f"{feed[1]}: {error}")
+        return []
+
+
+def with_image(article, bank):
+    title = article["title"].casefold()
+    category = article["category"]
+    for image in bank:
+        if (image["categoria"] == category
+                and all(image.get(key) for key in ("autor", "licencia", "fuente", "imagen"))
+                and any(term.casefold() in title for term in image["palabras_clave"])
+                and not any(term.casefold() in title for term in image.get("excluir", []))):
+            return dict(article, image=image["imagen"], imagen_autor=image["autor"],
+                        imagen_licencia=image["licencia"], imagen_fuente=image["fuente"],
+                        imagen_tipo=image["tipo"])
+    path = f"portadas/categoria-{COVER[category]}.svg"
+    if not (ROOT / path).is_file():
+        raise ValueError(f"Falta {path}")
+    return dict(article, image=path, imagen_autor="Crafti Gaming",
+                imagen_tipo="Ilustración temática propia")
+
+
+def build_catalog(reviewed, automatic, bank):
+    articles = []
+    seen = set()
+    for article in [*reviewed, *automatic]:
+        url = canonical_url(article["url"])
+        title_key = re.sub(r"\W+", " ", article["title"].casefold()).strip()
+        if not url or not title_key or url in seen or title_key in seen:
+            continue
+        seen.update((url, title_key))
+        articles.append(with_image(dict(article, url=url,
+                                       id=hashlib.sha256(url.encode()).hexdigest()[:16]), bank))
+    articles.sort(key=lambda article: publication(article["published"]), reverse=True)
+    return {"articles": articles}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=ROOT / "news.json")
+    parser.add_argument("--offline", action="store_true", help="Usar solo noticias revisadas")
+    args = parser.parse_args()
+
+    seed = json.loads((ROOT / "news.json").read_text(encoding="utf-8-sig"))
+    bank = json.loads((ROOT / "imagenes_autorizadas.json").read_text(encoding="utf-8-sig"))
+    reviewed = [article for article in seed["articles"]
+                if article.get("tipo_contenido") == "Noticia propia"]
+    if not reviewed:
+        raise SystemExit("El catálogo revisado está vacío")
+
+    automatic = []
+    if not args.offline:
+        with ThreadPoolExecutor(max_workers=len(FEEDS)) as executor:
+            for articles in executor.map(collect_feed, FEEDS):
+                automatic.extend(articles)
+        if not automatic:
+            print("Fuentes indisponibles. Se publica el catálogo revisado.")
+    automatic.sort(key=lambda article: publication(article["published"]), reverse=True)
+    catalog = build_catalog(reviewed, automatic[:80], bank["imagenes"])
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", delete=False,
+                                     dir=args.output.parent) as output:
+        json.dump(catalog, output, ensure_ascii=False, indent=2)
+        output.write("\n")
+    output_path = Path(output.name)
+    output_path.chmod(0o644)
+    output_path.replace(args.output)
+    print(f"Catálogo preparado: {len(catalog['articles'])} entradas")
+
+
+if __name__ == "__main__":
+    main()
