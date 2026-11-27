@@ -558,7 +558,12 @@ footer strong {
 </style>
 <meta name="description" content="Crafti Gaming: noticias de videojuegos en español, lanzamientos, tecnología y The Game Awards.">
 <style>@media(max-width:600px){.slide-content h1{font-size:clamp(1.15rem,5vw,1.65rem);overflow-wrap:anywhere}.slide-content{max-width:100%}}</style>
-</head>
+<style>
+.editorial-text>h1{line-height:1.22;margin:24px 0}
+.article-nav{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:12px}
+.slide-art.placeholder-art{display:none}
+@media(max-width:650px){.carousel,.track,.slide{height:440px}.slide{padding:24px 22px 66px}.slide-content{width:100%}.arrow{top:auto;bottom:12px;transform:none}.prev{left:16px}.next{right:16px}.slide h1{line-height:1.2}.slide p{line-height:1.45}.editorial-text{padding:20px}}
+</style></head>
 
 <body>
 
@@ -974,7 +979,7 @@ function openArticle(n) {
   root.replaceChildren();
   const back = make("button", "read-more", "← Volver");
   back.onclick = () => showPage(previous === "lector" ? "inicio" : previous);
-  root.append(back, make("p", "tag", n.categoria), make("h1", "", n.titulo), make("p", "notice", [n.tipo_contenido, n.fuente].filter(Boolean).join(" · ") || "Crafti Gaming"));
+  const nav = make("div", "article-nav"); nav.append(back, make("span", "tag", n.categoria)); root.append(nav, make("h1", "", n.titulo), make("p", "notice", [n.tipo_contenido, n.fuente].filter(Boolean).join(" · ") || "Crafti Gaming"));
   root.append(newsImage(n, "editorial-cover", "Ilustración de " + n.categoria));
   const credits = make("p", "notice image-credit",
     [n.imagen_tipo, n.imagen_autor, n.imagen_licencia].filter(Boolean).join(" · ")
@@ -1044,7 +1049,7 @@ function renderCarousel() {
       `radial-gradient(circle at 85% 20%, ${color}, transparent 65%), #10172d`;
 
     slide.classList.add("has-image");
-    slide.append(newsImage(n, "slide-art", ""));
+    const art = newsImage(n, "slide-art", ""); if (!n.imagen || /portadas\/noticia-.*\.svg$/i.test(n.imagen)) art.classList.add("placeholder-art"); slide.append(art);
     const content = make("div", "slide-content");
 
     content.append(
@@ -1093,7 +1098,7 @@ function restartTimer() {
 
   if (!paused) {
     timer = setInterval(() => {
-      if (!document.hidden) go(current + 1);
+      if (!document.hidden && document.getElementById("inicio").classList.contains("active") && !carousel.matches(":focus-within")) go(current + 1);
     }, 6000);
   }
 }
@@ -1173,7 +1178,7 @@ function renderNews() {
   renderCards("allNews", news);
   const match = (n, pattern) => pattern.test(normalize([n.titulo,n.descripcion,n.categoria,n.fuente].join(" ")));
   renderCards("spaceNews",news.filter(n=>match(n,/ciencia|espacio|spacex|starship|starlink|nasa|astronomia/)));
-  renderCards("expertNews",news.filter(n=>n.tipo_contenido === "Noticia propia" && n.expertos.length));
+  renderCards("expertNews",news.filter(n=>n.tipo_contenido === "Noticia propia" && n.expertos?.length));
   renderCards("aiNews",news.filter(n=>match(n,/inteligencia artificial|\bia\b|\bai\b|chatgpt|gemini|openai|robot|machine learning/)));
   renderCards("xboxNews",news.filter(n=>match(n,/xbox|microsoft gaming|game pass/)));
   renderCards("psNews",news.filter(n=>match(n,/playstation|\bps5\b|sony interactive/)));
@@ -1249,7 +1254,7 @@ async function loadNews() {
         return;
       }
       const valid = parseNews(text);
-      if (!valid.length) continue;
+      if (!valid.length || !valid.some(n => n.tipo_contenido !== "Editorial")) continue;
       ownNews = [...editorial, ...valid.filter(n => n.tipo_contenido === "Editorial"
         && n.contenido && !editorial.some(e => e.titulo === n.titulo))];
       news = valid.filter(n => n.tipo_contenido !== "Editorial");
